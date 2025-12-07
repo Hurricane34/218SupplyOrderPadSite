@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>218 Supply – Order Pad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --header-start: #7a1b1b;
+      --header-end:   #1f4d32;
+      --accent-main:  #9e2a2b;
+      --accent-alt:   #335c67;
+      --bg-app:       #0f172a;
+      --card-bg:      #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-app);
+      color: #111827;
+    }
+
+    /* HEADER – app-style bar */
+    header {
+      background: linear-gradient(90deg, var(--header-start), var(--header-end));
+      color: white;
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-left img {
+      height: 44px;
+      width: auto;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+      background: white;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      line-height: 1.2;
+    }
+    header h1 span {
+      display: block;
+      font-size: 0.75rem;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .login-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+      font-size: 0.8rem;
+    }
+    .header-settings-btn {
+      margin-left: 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.95);
+      background: rgba(0,0,0,0.18);
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .header-signin-btn {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.95);
+      background: rgba(0,0,0,0.18);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+    .signed-in-label {
+      font-size: 0.8rem;
+      color: rgba(229, 231, 235, 0.96);
+      font-weight: 500;
+      max-width: 140px;
+      text-align: right;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+
+    /* APP CONTAINER – phone-style column */
+    main {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 14px 14px 24px;
+      min-height: calc(100vh - 64px);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: 0 4px 10px rgba(15,23,42,0.45);
+      padding: 14px 16px;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1rem;
+    }
+
+    .start-card {
+      text-align: center;
+      padding: 28px 16px 24px;
+    }
+    .start-card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.6rem;
+    }
+    .start-card p {
+      margin: 0 0 1.4rem;
+      color: #4b5563;
+      font-size: 0.9rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    select,
+    input[type="number"],
+    input[type="text"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 0.9rem;
+      background: #f9fafb;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .row > div {
+      flex: 1 1 160px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, background-color 0.08s ease-out;
+      font-weight: 600;
+    }
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 2px 3px rgba(0,0,0,0.35);
+      filter: brightness(0.94);
+    }
+    .btn-primary {
+      background: var(--accent-main);
+      color: white;
+      width: 100%;
+    }
+    .btn-secondary {
+      background: var(--accent-alt);
+      color: white;
+      width: 100%;
+    }
+    .btn-link {
+      background: transparent;
+      color: var(--accent-alt);
+      padding: 4px 0;
+      border-radius: 0;
+      font-weight: 500;
+    }
+    .btn-ghost {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: 999px;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 0.8rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 0.85rem;
+    }
+    th, td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      text-align: left;
+      background: #f9fafb;
+    }
+    .text-right { text-align: right; }
+
+    .hidden { display: none; }
+
+    .page-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    /* CATEGORY GRID – tappable pills */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .category-btn {
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      background: #f9fafb;
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    .category-btn.active {
+      background: var(--accent-alt);
+      border-color: var(--accent-alt);
+      color: #fff;
+    }
+
+    .product-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .product-main { flex: 1 1 auto; }
+    .product-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .product-meta {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    .product-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      min-width: 90px;
+    }
+    .product-controls input[type="number"] {
+      width: 70px;
+      padding: 4px 6px;
+      font-size: 0.8rem;
+    }
+
+    /* CUSTOMER LIST PAGE */
+    .customer-list {
+      margin-top: 10px;
+      max-height: 65vh;
+      overflow-y: auto;
+    }
+    .customer-row {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f9fafb;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border: 1px solid #e5e7eb;
+    }
+    .customer-row:hover {
+      background: #eef2ff;
+      border-color: var(--accent-alt);
+    }
+    .customer-row-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .customer-row-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .customer-row-id {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    /* MODALS – full-screen dim like an app sheet */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal-backdrop.hidden {
+      display: none;
+    }
+    .modal {
+      background: white;
+      border-radius: 16px;
+      padding: 18px 16px 14px;
+      width: 94%;
+      max-width: 480px;
+      box-shadow: 0 20px 40px rgba(15,23,42,0.5);
+    }
+    .modal h2 {
+      margin-top: 0;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+    .modal p {
+      margin-top: 0;
+      font-size: 0.82rem;
+      color: #6b7280;
+    }
+    .modal textarea {
+      width: 100%;
+      min-height: 220px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.8rem;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    /* MOBILE TWEAKS */
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1rem;
+      }
+      main {
+        padding: 12px 10px 20px;
+      }
+      .card {
+        padding: 14px 14px;
+      }
+      .btn-sm {
+        padding: 6px 10px;
+      }
+      .page-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .page-header-row > *:last-child {
+        align-self: stretch;
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+    }
+
+    /* DESKTOP – relax the full-width buttons a bit */
+    @media (min-width: 721px) {
+      .start-card .btn-primary {
+        width: 220px;
+      }
+      .card button.btn-primary,
+      .card button.btn-secondary {
+        width: auto;
+      }
+    }
+  </style>
+
+  <!-- PWA manifest and meta -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7a1b1b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+</head>
+
+<body>
+  <header>
+    <div class="header-left">
+      <img src="Logo.PNG" alt="218 Supply logo" />
+      <h1>
+        218 Supply
+        <span>Order Pad</span>
+      </h1>
+    </div>
+    <div class="login-box">
+      <button id="signInBtn" class="header-signin-btn">Sign In</button>
+      <span id="signedInLabel" class="signed-in-label" style="display:none;"></span>
+    </div>
+    <button id="settingsBtn" class="header-settings-btn" aria-label="Settings">⚙</button>
+  </header>
+
+  <main>
+    <div class="card start-card" id="startCard">
+      <h2>Start a New Order</h2>
+      <p>Tap below, pick your customer, and build the order one item at a time.</p>
+      <button class="btn-primary" id="startOrderBtn">
+        Start New Order
+      </button>
+    </div>
+
+    <!-- Customer selection page -->
+    <div id="customerSelectPage" class="hidden card">
+      <div class="page-header-row">
+        <h2>Select Customer</h2>
+        <button class="btn-sm btn-ghost" id="addCustomerFromListBtn">Add New Customer</button>
+      </div>
+      <input
+        type="text"
+        id="customerSearchInput"
+        placeholder="Search customers..."
+        aria-label="Search customers"
+      />
+      <div id="customerList" class="customer-list"></div>
+    </div>
+
+    <div id="orderMain" class="hidden card">
+      <div class="page-header-row">
+        <h2>Customer &amp; Order Info</h2>
+        <button class="btn-sm btn-ghost" id="addCustomerBtn">Add New Customer</button>
+      </div>
+      <div class="row" style="margin-bottom:8px;">
+        <div>
+          <label for="customerSelect">Customer</label>
+          <select id="customerSelect">
+            <option value="">-- Select customer --</option>
+          </select>
+        </div>
+        <div>
+          <label for="orderNote">Order Notes (optional)</label>
+          <input type="text" id="orderNote" placeholder="e.g. Leave at back door" />
+        </div>
+      </div>
+
+      <div class="page-header-row" style="margin-top:14px;">
+        <h2>Order Items</h2>
+        <button class="btn-primary btn-sm" id="goToAddItemBtn">Add New Item</button>
+      </div>
+      <p class="muted" style="margin-top:4px;">
+        Add one item at a time. When you’re done, generate the purchase order.
+      </p>
+
+      <div id="cartEmptyMsg" class="muted" style="margin-top:10px;">
+        No items yet. Tap “Add New Item” to begin.
+      </div>
+      <div id="cartContainer" style="display:none; margin-top:8px;">
+        <table id="cartTable">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th class="text-right">Qty</th>
+              <th class="text-right">Price</th>
+              <th class="text-right">Line Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3" class="text-right">Total</th>
+              <th class="text-right" id="orderTotalCell">$0.00</th>
+              <th></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div style="margin-top:16px;">
+        <h2 style="margin-bottom:8px;">Generate Purchase Order</h2>
+        <button class="btn-secondary" id="generateSummaryBtn">Generate Purchase Order PDF</button>
+        <button class="btn-link" id="clearOrderBtn">Clear Order</button>
+        <p class="muted">
+          A PDF purchase order will be generated on this device for you or the office.
+        </p>
+      </div>
+    </div>
+
+    <div id="addItemPage" class="hidden card">
+      <div class="page-header-row">
+        <h2>Add Item</h2>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-sm btn-ghost" id="addProductBtn">Add New Product</button>
+          <button class="btn-sm btn-ghost" id="backToOrderBtn">&larr; Back to Order</button>
+        </div>
+      </div>
+      <p class="muted">Pick a category, then choose a product and quantity.</p>
+      <div id="categoryGrid" class="category-grid"></div>
+      <div id="productList"></div>
+    </div>
+  </main>
+
+  <!-- Sign-in modal -->
+  <div id="loginModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2>Sign In</h2>
+      <p>Sign in once on this device and it will remember you.</p>
+      <label for="loginUsername">Username</label>
+      <input type="text" id="loginUsername" />
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" />
+      <div class="modal-actions">
+        <button class="btn-ghost btn-sm" id="cancelLoginBtn">Cancel</button>
+        <button class="btn-primary btn-sm" id="confirmLoginBtn">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <div id="settingsModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2>Settings</h2>
+      <p>Update your email for purchase orders or change your password on this device.</p>
+      <label for="settingsUsername">Username</label>
+      <input type="text" id="settingsUsername" disabled />
+      <label for="settingsEmail">Email for purchase orders</label>
+      <input type="email" id="settingsEmail" placeholder="you@example.com" />
+      <hr style="margin:12px 0;border:none;border-top:1px solid #e5e7eb;" />
+      <h3 style="margin:0 0 6px;font-size:0.9rem;">Change password</h3>
+      <p class="muted" style="margin-top:0;margin-bottom:6px;">Leave blank to keep your current password.</p>
+      <label for="settingsCurrentPassword">Current password</label>
+      <input type="password" id="settingsCurrentPassword" />
+      <label for="settingsNewPassword">New password</label>
+      <input type="password" id="settingsNewPassword" />
+      <label for="settingsConfirmPassword">Confirm new password</label>
+      <input type="password" id="settingsConfirmPassword" />
+      <div class="modal-actions">
+        <button class="btn-link btn-sm" id="signOutBtn" style="margin-right:auto;color:#b91c1c;">Sign out</button>
+        <button class="btn-ghost btn-sm" id="cancelSettingsBtn">Cancel</button>
+        <button class="btn-primary btn-sm" id="saveSettingsBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purchase order preview -->
+  <div id="poModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2>Purchase Order</h2>
+      <p>Review this purchase order, then download a PDF or send it to <strong>sales@218supply.com</strong>.</p>
+      <div id="poPreviewContainer" style="width:100%;height:260px;border:1px solid #d1d5db;border-radius:8px;overflow:hidden;background:#f9fafb;">
+        <iframe id="poPreviewFrame" style="width:100%;height:100%;border:0;"></iframe>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-ghost btn-sm" id="closePoModalBtn">Close</button>
+        <button class="btn-secondary btn-sm" id="downloadPoBtn">Download</button>
+        <button class="btn-primary btn-sm" id="emailPoBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add customer modal -->
+  <div id="customerModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2>Add New Customer</h2>
+      <p>New customers are saved on this device. Also add them later to your master CSV to keep them permanently.</p>
+      <label for="newCustomerName">Customer Name</label>
+      <input type="text" id="newCustomerName" />
+      <label for="newCustomerId">Customer ID (optional)</label>
+      <input type="text" id="newCustomerId" placeholder="e.g. CUST-0100" />
+      <div class="modal-actions">
+        <button class="btn-ghost btn-sm" id="cancelCustomerBtn">Cancel</button>
+        <button class="btn-primary btn-sm" id="saveCustomerBtn">Save Customer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add product modal -->
+  <div id="productModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2>Add New Product</h2>
+      <p>New products are saved on this device. Also add them later to your products CSV.</p>
+      <label for="newProdName">Product Name</label>
+      <input type="text" id="newProdName" />
+      <label for="newProdSku">SKU</label>
+      <input type="text" id="newProdSku" />
+      <label for="newProdCategory">Category (e.g. PAPER, BAG, CUP)</label>
+      <input type="text" id="newProdCategory" />
+      <label for="newProdPack">Pack Size (e.g. 96/CS)</label>
+      <input type="text" id="newProdPack" />
+      <label for="newProdPrice">Price (per case)</label>
+      <input type="number" step="0.01" id="newProdPrice" />
+      <div class="modal-actions">
+        <button class="btn-ghost btn-sm" id="cancelProductBtn">Cancel</button>
+        <button class="btn-primary btn-sm" id="saveProductBtn">Save Product</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="data.js"></script>
+
+  <script>
+    /* Inline logo for PDF header */
+    const LOGO_DATA_URL = "data:image/png;base64,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";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const startCard              = document.getElementById("startCard");
+      const startOrderBtn          = document.getElementById("startOrderBtn");
+      const orderMain              = document.getElementById("orderMain");
+      const addItemPage            = document.getElementById("addItemPage");
+      const customerSelectPage     = document.getElementById("customerSelectPage");
+      const customerList           = document.getElementById("customerList");
+      const customerSearchInput    = document.getElementById("customerSearchInput");
+      const addCustomerFromListBtn = document.getElementById("addCustomerFromListBtn");
+
+      const customerSelect     = document.getElementById("customerSelect");
+      const orderNoteInput     = document.getElementById("orderNote");
+      const signInBtn          = document.getElementById("signInBtn");
+      const signedInLabel      = document.getElementById("signedInLabel");
+      const addItemBtn         = document.getElementById("goToAddItemBtn");
+      const backToOrderBtn     = document.getElementById("backToOrderBtn");
+      const categoryGrid       = document.getElementById("categoryGrid");
+      const productList        = document.getElementById("productList");
+      const cartEmptyMsg       = document.getElementById("cartEmptyMsg");
+      const cartContainer      = document.getElementById("cartContainer");
+      const cartTableBody      = document.querySelector("#cartTable tbody");
+      const orderTotalCell     = document.getElementById("orderTotalCell");
+      const generateSummaryBtn = document.getElementById("generateSummaryBtn");
+      const clearOrderBtn      = document.getElementById("clearOrderBtn");
+
+      const loginModalBackdrop    = document.getElementById("loginModalBackdrop");
+      const loginUsernameInput    = document.getElementById("loginUsername");
+      const loginPasswordInput    = document.getElementById("loginPassword");
+      const cancelLoginBtn        = document.getElementById("cancelLoginBtn");
+      const confirmLoginBtn       = document.getElementById("confirmLoginBtn");
+      const settingsBtn              = document.getElementById("settingsBtn");
+      const settingsModalBackdrop    = document.getElementById("settingsModalBackdrop");
+      const settingsUsernameInput    = document.getElementById("settingsUsername");
+      const settingsEmailInput       = document.getElementById("settingsEmail");
+      const settingsCurrentPassword  = document.getElementById("settingsCurrentPassword");
+      const settingsNewPassword      = document.getElementById("settingsNewPassword");
+      const settingsConfirmPassword  = document.getElementById("settingsConfirmPassword");
+      const cancelSettingsBtn        = document.getElementById("cancelSettingsBtn");
+      const saveSettingsBtn          = document.getElementById("saveSettingsBtn");
+      const signOutBtn               = document.getElementById("signOutBtn");
+
+      const poModalBackdrop   = document.getElementById("poModalBackdrop");
+      const poPreviewFrame    = document.getElementById("poPreviewFrame");
+      const closePoModalBtn   = document.getElementById("closePoModalBtn");
+      const downloadPoBtn     = document.getElementById("downloadPoBtn");
+      const emailPoBtn        = document.getElementById("emailPoBtn");
+
+      const customerModalBackdrop = document.getElementById("customerModalBackdrop");
+      const newCustomerNameInput  = document.getElementById("newCustomerName");
+      const newCustomerIdInput    = document.getElementById("newCustomerId");
+      const cancelCustomerBtn     = document.getElementById("cancelCustomerBtn");
+      const saveCustomerBtn       = document.getElementById("saveCustomerBtn");
+
+      const productModalBackdrop  = document.getElementById("productModalBackdrop");
+      const newProdNameInput      = document.getElementById("newProdName");
+      const newProdSkuInput       = document.getElementById("newProdSku");
+      const newProdCategoryInput  = document.getElementById("newProdCategory");
+      const newProdPackInput      = document.getElementById("newProdPack");
+      const newProdPriceInput     = document.getElementById("newProdPrice");
+      const cancelProductBtn      = document.getElementById("cancelProductBtn");
+      const saveProductBtn        = document.getElementById("saveProductBtn");
+
+      const addCustomerBtn        = document.getElementById("addCustomerBtn");
+
+      let currentUser = null;
+      let currentUserProfile = null;
+      let userProfiles = {};
+      let cartItems = [];
+
+      // force picking a customer before items / PO
+      addItemBtn.disabled = true;
+      generateSummaryBtn.disabled = true;
+
+      customerSelect.addEventListener("change", () => {
+        const hasCustomer = !!customerSelect.value;
+        addItemBtn.disabled = !hasCustomer;
+        generateSummaryBtn.disabled = !hasCustomer;
+      });
+
+      // ---- helpers ----
+      function formatMoney(n) {
+        return "$" + n.toFixed(2);
+      }
+
+      function loadUserProfiles() {
+        try {
+          const raw = localStorage.getItem("orderpadUserProfiles");
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object") {
+              userProfiles = parsed;
+            }
+          }
+        } catch (e) {
+          console.warn("Could not load user profiles", e);
+          userProfiles = {};
+        }
+      }
+
+      function saveUserProfiles() {
+        try {
+          localStorage.setItem("orderpadUserProfiles", JSON.stringify(userProfiles));
+        } catch (e) {
+          console.warn("Could not save user profiles", e);
+        }
+      }
+
+      function loadLocalData() {
+        try {
+          loadUserProfiles();
+          const storedUser = localStorage.getItem("orderpadUser") || localStorage.getItem("orderpadCurrentUser");
+          if (storedUser) {
+            currentUser = storedUser;
+            currentUserProfile = userProfiles[storedUser] || { username: storedUser, email: "", password: "" };
+            userProfiles[storedUser] = currentUserProfile;
+          }
+        } catch (e) {
+          console.warn("LocalStorage not available", e);
+        }
+
+        showSignedInState();
+
+        // load extra customers/products saved on this device
+        try {
+          const extraCust = localStorage.getItem("orderpadExtraCustomers");
+          if (extraCust) {
+            const parsed = JSON.parse(extraCust);
+            if (Array.isArray(parsed)) window.customers.push(...parsed);
+          }
+        } catch {}
+
+        try {
+          const extraProd = localStorage.getItem("orderpadExtraProducts");
+          if (extraProd) {
+            const parsed = JSON.parse(extraProd);
+            if (Array.isArray(parsed)) window.products.push(...parsed);
+          }
+        } catch {}
+      }
+
+      function saveExtraCustomers(customers) {
+        try {
+          localStorage.setItem("orderpadExtraCustomers", JSON.stringify(customers));
+        } catch {}
+      }
+
+      function saveExtraProducts(products) {
+        try {
+          localStorage.setItem("orderpadExtraProducts", JSON.stringify(products));
+        } catch {}
+      }
+
+      function showLoginModal() {
+        loginModalBackdrop.classList.remove("hidden");
+        loginUsernameInput.focus();
+      }
+
+      function hideLoginModal() {
+        loginModalBackdrop.classList.add("hidden");
+        loginUsernameInput.value = "";
+        loginPasswordInput.value = "";
+      }
+
+            function showSignedInState() {
+        if (currentUser && currentUserProfile) {
+          signInBtn.style.display = "none";
+          signedInLabel.style.display = "inline";
+          // Header just shows the username now
+          signedInLabel.textContent = `Signed in as ${currentUserProfile.username}`;
+        } else {
+          signInBtn.style.display = "inline-block";
+          signedInLabel.style.display = "none";
+          signedInLabel.textContent = "";
+        }
+      }
+
+function getSortedCustomers() {
+        return (window.customers || []).slice().sort((a, b) =>
+          (a.name || "").localeCompare(b.name || "")
+        );
+      }
+
+      function populateCustomers() {
+        const sorted = getSortedCustomers();
+        customerSelect.innerHTML = '<option value="">-- Select customer --</option>';
+        for (const c of sorted) {
+          const opt = document.createElement("option");
+          opt.value = c.id;
+          opt.textContent = c.name;
+          customerSelect.appendChild(opt);
+        }
+      }
+
+      function renderCustomerList(filterText = "") {
+        const filter = filterText.toLowerCase();
+        const all = getSortedCustomers().filter(c =>
+          (c.name || "").toLowerCase().includes(filter) ||
+          (c.id || "").toLowerCase().includes(filter)
+        );
+        customerList.innerHTML = "";
+        if (!all.length) {
+          const p = document.createElement("p");
+          p.className = "muted";
+          p.textContent = "No customers match your search.";
+          customerList.appendChild(p);
+          return;
+        }
+        all.forEach(c => {
+          const row = document.createElement("div");
+          row.className = "customer-row";
+
+          const main = document.createElement("div");
+          main.className = "customer-row-main";
+
+          const nameEl = document.createElement("div");
+          nameEl.className = "customer-row-name";
+          nameEl.textContent = c.name;
+
+          const idEl = document.createElement("div");
+          idEl.className = "customer-row-id";
+          idEl.textContent = c.id || "";
+
+          main.appendChild(nameEl);
+          if (c.id) main.appendChild(idEl);
+
+          row.appendChild(main);
+
+          row.addEventListener("click", () => {
+            selectCustomerAndGoToOrder(c.id);
+          });
+
+          customerList.appendChild(row);
+        });
+      }
+
+      function selectCustomerAndGoToOrder(customerId) {
+        customerSelect.value = customerId || "";
+        const hasCustomer = !!customerSelect.value;
+        addItemBtn.disabled = !hasCustomer;
+        generateSummaryBtn.disabled = !hasCustomer;
+
+        customerSelectPage.classList.add("hidden");
+        orderMain.classList.remove("hidden");
+        orderNoteInput.focus();
+      }
+
+      function buildCategories() {
+        categoryGrid.innerHTML = "";
+        const catsSet = new Set();
+        (window.products || []).forEach(p => {
+          const c = p.category || "OTHER";
+          catsSet.add(c);
+        });
+        const cats = Array.from(catsSet).sort();
+        cats.forEach(cat => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "category-btn";
+          btn.textContent = cat;
+          btn.addEventListener("click", () => {
+            document
+              .querySelectorAll(".category-btn")
+              .forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            showProductsForCategory(cat);
+          });
+          categoryGrid.appendChild(btn);
+        });
+      }
+
+      function showProductsForCategory(category) {
+        productList.innerHTML = "";
+        const filtered = (window.products || [])
+          .filter(p => (p.category || "OTHER") === category)
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        if (!filtered.length) {
+          const p = document.createElement("p");
+          p.className = "muted";
+          p.textContent = "No products in this category yet.";
+          productList.appendChild(p);
+          return;
+        }
+
+        filtered.forEach(prod => {
+          const row = document.createElement("div");
+          row.className = "product-row";
+
+          const main = document.createElement("div");
+          main.className = "product-main";
+
+          const nameEl = document.createElement("div");
+          nameEl.className = "product-name";
+          nameEl.textContent = prod.name;
+
+          const metaEl = document.createElement("div");
+          metaEl.className = "product-meta";
+          metaEl.textContent = `SKU ${prod.sku} • ${prod.packSize || ""} • ${formatMoney(prod.price || 0)}`;
+
+          main.appendChild(nameEl);
+          main.appendChild(metaEl);
+
+          const controls = document.createElement("div");
+          controls.className = "product-controls";
+
+          const qtyInput = document.createElement("input");
+          qtyInput.type = "number";
+          qtyInput.min = "1";
+          qtyInput.step = "1";
+          qtyInput.value = "1";
+
+          const addBtn = document.createElement("button");
+          addBtn.type = "button";
+          addBtn.className = "btn-primary btn-sm";
+          addBtn.textContent = "Add";
+
+          addBtn.addEventListener("click", () => {
+            const qty = parseInt(qtyInput.value, 10) || 0;
+            if (qty <= 0) {
+              alert("Quantity must be at least 1.");
+              return;
+            }
+            addItemToCart(prod, qty);
+            qtyInput.value = "1";
+          });
+
+          controls.appendChild(qtyInput);
+          controls.appendChild(addBtn);
+
+          row.appendChild(main);
+          row.appendChild(controls);
+          productList.appendChild(row);
+        });
+      }
+
+      function addItemToCart(prod, qty) {
+        const existing = cartItems.find(item => item.sku === prod.sku);
+        if (existing) {
+          existing.qty += qty;
+        } else {
+          cartItems.push({
+            sku: prod.sku,
+            name: prod.name,
+            packSize: prod.packSize || "",
+            price: prod.price || 0,
+            qty
+          });
+        }
+        renderCart();
+      }
+
+      function renderCart() {
+        cartTableBody.innerHTML = "";
+        if (!cartItems.length) {
+          cartEmptyMsg.style.display = "block";
+          cartContainer.style.display = "none";
+          orderTotalCell.textContent = "$0.00";
+          return;
+        }
+        cartEmptyMsg.style.display = "none";
+        cartContainer.style.display = "block";
+
+        let total = 0;
+        cartItems.forEach((item, index) => {
+          const tr = document.createElement("tr");
+
+          const tdProd = document.createElement("td");
+          tdProd.innerHTML = `<strong>${item.name}</strong><br><span class="muted">SKU ${item.sku} • ${item.packSize}</span>`;
+
+          const tdQty = document.createElement("td");
+          tdQty.className = "text-right";
+          tdQty.textContent = item.qty;
+
+          const tdPrice = document.createElement("td");
+          tdPrice.className = "text-right";
+          tdPrice.textContent = formatMoney(item.price);
+
+          const lineTotal = item.price * item.qty;
+          total += lineTotal;
+          const tdLine = document.createElement("td");
+          tdLine.className = "text-right";
+          tdLine.textContent = formatMoney(lineTotal);
+
+          const tdRemove = document.createElement("td");
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "btn-ghost btn-sm";
+          removeBtn.textContent = "X";
+          removeBtn.addEventListener("click", () => {
+            cartItems.splice(index, 1);
+            renderCart();
+          });
+          tdRemove.appendChild(removeBtn);
+
+          tr.appendChild(tdProd);
+          tr.appendChild(tdQty);
+          tr.appendChild(tdPrice);
+          tr.appendChild(tdLine);
+          tr.appendChild(tdRemove);
+
+          cartTableBody.appendChild(tr);
+        });
+
+        orderTotalCell.textContent = formatMoney(total);
+      }
+
+      function clearOrder() {
+        if (!cartItems.length && !customerSelect.value && !orderNoteInput.value) return;
+        if (!confirm("Clear this order?")) return;
+        cartItems = [];
+        renderCart();
+        customerSelect.value = "";
+        orderNoteInput.value = "";
+        addItemBtn.disabled = true;
+        generateSummaryBtn.disabled = true;
+      }
+
+      function buildPoText() {
+        const customerId = customerSelect.value || "";
+        const customerName =
+          (window.customers || []).find(c => c.id === customerId)?.name || "";
+        const note = orderNoteInput.value || "";
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10);
+
+        const headerLines = [
+          "218 SUPPLY – PURCHASE ORDER",
+          "----------------------------------------",
+          "Date: " + dateStr,
+          "Salesperson: " + (currentUser || "Not signed in"),
+          "Salesperson Email: " + ((currentUserProfile && currentUserProfile.email) || "Not set"),
+          "Customer: " + (customerName || "N/A") + (customerId ? " (" + customerId + ")" : ""),
+          note ? "Notes: " + note : "",
+          ""
+        ].filter(Boolean);
+
+        const itemLines = cartItems.map((item, idx) => {
+          return (
+            (idx + 1) + ". " +
+            item.name +
+            " | SKU " + item.sku +
+            " | " + item.packSize +
+            " | Qty " + item.qty +
+            " @ " + formatMoney(item.price) +
+            " = " + formatMoney(item.price * item.qty)
+          );
+        });
+
+        const subtotal =
+          cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+        const taxRate = 0.07375;
+        const taxAmount = subtotal * taxRate;
+        const grandTotal = subtotal + taxAmount;
+
+        const footer = [
+          "",
+          "SUBTOTAL: " + formatMoney(subtotal),
+          "SALES TAX (7.375%): " + formatMoney(taxAmount),
+          "TOTAL (with tax): " + formatMoney(grandTotal),
+          "",
+          "Thanks for your business!",
+          "218 Supply"
+        ];
+
+        return headerLines.concat(itemLines).concat(footer).join("\n");
+      }
+
+      function createPdfDoc() {
+        if (!window.jspdf || !window.jspdf.jsPDF) return;
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: "pt", format: "letter" });
+
+        const pageWidth  = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin     = 36;
+        const headerH    = 72;
+
+        // Top header bar: smooth red → green gradient to match app header
+        const steps = 40;
+        for (let i = 0; i < steps; i++) {
+          const t = i / (steps - 1);
+          const r = Math.round(122 + (31 - 122) * t); // from #7a1b1b to #1f4d32
+          const g = Math.round(27  + (77 - 27)  * t);
+          const b = Math.round(27  + (50 - 27)  * t);
+          const x = (pageWidth / steps) * i;
+          doc.setFillColor(r, g, b);
+          doc.rect(x, 0, pageWidth / steps + 1, headerH, "F");
+        }
+
+        // Header text (white, on left)
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.text("218 SUPPLY", margin, 28);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.text("Purchase Order", margin, 46);
+
+        // Logo on right (use the same Logo.PNG that's in the header)
+        try {
+          const headerLogoEl = document.querySelector("header .header-left img");
+          if (headerLogoEl && headerLogoEl.complete) {
+            const logoWidth = 120;
+            const ratio = headerLogoEl.naturalHeight && headerLogoEl.naturalWidth
+              ? headerLogoEl.naturalHeight / headerLogoEl.naturalWidth
+              : (52 / 120);
+            const logoHeight = logoWidth * ratio;
+            const logoX = pageWidth - margin - logoWidth;
+            const logoY = (headerH - logoHeight) / 2;
+            doc.addImage(
+              headerLogoEl,
+              "PNG",
+              logoX,
+              logoY,
+              logoWidth,
+              logoHeight
+            );
+          } else if (LOGO_DATA_URL) {
+            const logoWidth = 120;
+            const logoHeight = 52;
+            const logoX = pageWidth - margin - logoWidth;
+            const logoY = (headerH - logoHeight) / 2;
+            doc.addImage(
+              LOGO_DATA_URL,
+              "PNG",
+              logoX,
+              logoY,
+              logoWidth,
+              logoHeight
+            );
+          }
+        } catch (e) {
+          // If for some reason the image fails, we still continue
+          console.warn("Logo addImage failed", e);
+        }
+
+        // Order info
+        doc.setTextColor(0, 0, 0);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+
+        let y = headerH + 28;
+
+        const customerId = customerSelect.value || "";
+        const customerObj = (window.customers || []).find(c => c.id === customerId);
+        const customerName = customerObj?.name || "";
+        const note = orderNoteInput.value || "";
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10);
+        const salesperson = currentUser || "Not signed in";
+        const salespersonEmail = currentUserProfile && currentUserProfile.email ? currentUserProfile.email : "";
+
+        const infoLines = [
+          `Date: ${dateStr}`,
+          `Customer: ${customerName || "N/A"}${customerId ? " (" + customerId + ")" : ""}`,
+          `Salesperson: ${salesperson}`,
+        ];
+        if (salespersonEmail) {
+          infoLines.push(`Salesperson Email: ${salespersonEmail}`);
+        }
+        if (note) {
+          infoLines.push("Notes: " + note);
+        }
+
+        infoLines.forEach(line => {
+          doc.text(line, margin, y);
+          y += 16;
+        });
+
+        y += 4;
+
+        // Table headers
+        const colWidths = {
+          sku:   80,
+          name:  pageWidth - margin * 2 - 80 - 50 - 70 - 70 - 10,
+          qty:   50,
+          price: 70,
+          total: 70
+        };
+
+        doc.setFont("helvetica", "bold");
+        doc.text("SKU",   margin, y);
+        doc.text("Product", margin + colWidths.sku, y);
+        doc.text("Qty",   margin + colWidths.sku + colWidths.name + 4, y);
+        doc.text("Price", margin + colWidths.sku + colWidths.name + colWidths.qty + 4, y);
+        doc.text("Line Total", margin + colWidths.sku + colWidths.name + colWidths.qty + colWidths.price + 4, y);
+
+        y += 8;
+        doc.setDrawColor(200);
+        doc.line(margin, y, pageWidth - margin, y);
+        y += 14;
+        doc.setFont("helvetica", "normal");
+
+        let subtotal = 0;
+        const lineHeightBase = 14;
+
+        cartItems.forEach(item => {
+          if (y > pageHeight - 72) {
+            doc.addPage();
+            y = margin;
+          }
+
+          const lineTotal = item.price * item.qty;
+          subtotal += lineTotal;
+
+          const nameText = item.name + (item.packSize ? " (" + item.packSize + ")" : "");
+          const wrappedName = doc.splitTextToSize(nameText, colWidths.name);
+
+          const rowHeight = lineHeightBase * wrappedName.length;
+
+          let x = margin;
+
+          doc.text(String(item.sku), x, y);
+          x += colWidths.sku;
+
+          doc.text(wrappedName, x, y);
+
+          x = margin + colWidths.sku + colWidths.name + 4;
+          doc.text(String(item.qty), x, y);
+
+          x += colWidths.qty;
+          doc.text(formatMoney(item.price), x, y);
+
+          x += colWidths.price;
+          doc.text(formatMoney(lineTotal), x, y);
+
+          y += rowHeight;
+        });
+
+        // Totals (with sales tax)
+        const taxRate = 0.07375;
+        const taxAmount = subtotal * taxRate;
+        const grandTotal = subtotal + taxAmount;
+
+        y += 10;
+        if (y > pageHeight - 72) {
+          doc.addPage();
+          y = margin;
+        }
+
+        // Right-aligned money column for easier reading
+        const labelX = pageWidth - margin - 140;
+        const amountX = pageWidth - margin;
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Subtotal:", labelX, y, { align: "right" });
+        doc.text(formatMoney(subtotal), amountX, y, { align: "right" });
+        y += 16;
+
+        doc.text("Sales Tax (7.375%):", labelX, y, { align: "right" });
+        doc.text(formatMoney(taxAmount), amountX, y, { align: "right" });
+        y += 16;
+
+        doc.text("Total:", labelX, y, { align: "right" });
+        doc.text(formatMoney(grandTotal), amountX, y, { align: "right" });
+
+        y += 28;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.text("Thank you for your business – 218 Supply", margin, y);
+
+        const filename = `PO-${customerId || "NO-CUSTOMER"}-${dateStr}.pdf`;
+        return { doc, filename };
+      }
+
+      let lastPoText = "";
+      function showPoModal(poText) {
+        lastPoText = poText || buildPoText();
+        const { doc } = createPdfDoc();
+        const dataUrl = doc.output("dataurlstring");
+        if (poPreviewFrame) {
+          poPreviewFrame.src = dataUrl;
+        }
+        poModalBackdrop.classList.remove("hidden");
+      }
+
+      function hidePoModal() {
+        poModalBackdrop.classList.add("hidden");
+      }
+
+      function openCustomerModal() {
+        customerModalBackdrop.classList.remove("hidden");
+        newCustomerNameInput.focus();
+      }
+
+      // ---- event wiring ----
+
+      // sign-in remembered per device & data load
+      loadLocalData();
+      populateCustomers();
+      buildCategories();
+      renderCart();
+      renderCustomerList("");
+
+      signInBtn.addEventListener("click", showLoginModal);
+      cancelLoginBtn.addEventListener("click", hideLoginModal);
+      confirmLoginBtn.addEventListener("click", () => {
+        const username = loginUsernameInput.value.trim();
+        const password = loginPasswordInput.value;
+        if (!username) {
+          alert("Enter a username.");
+          return;
+        }
+
+        if (!userProfiles) {
+          userProfiles = {};
+        }
+        let profile = userProfiles[username];
+
+        if (profile && profile.password) {
+          if (profile.password !== password) {
+            alert("Incorrect password for this user.");
+            return;
+          }
+        } else {
+          // First time login or no password set yet: store what they enter (can be blank)
+          profile = profile || { username, email: "", password: "" };
+          profile.password = password || "";
+          userProfiles[username] = profile;
+          saveUserProfiles();
+        }
+
+        currentUser = username;
+        currentUserProfile = profile;
+        try {
+          localStorage.setItem("orderpadUser", username);
+          localStorage.setItem("orderpadCurrentUser", username);
+        } catch {}
+
+        hideLoginModal();
+        showSignedInState();
+      });
+
+      settingsBtn.addEventListener("click", () => {
+        if (!currentUser) {
+          alert("Sign in first to open settings.");
+          return;
+        }
+        if (!currentUserProfile) {
+          currentUserProfile = { username: currentUser, email: "", password: "" };
+          userProfiles[currentUser] = currentUserProfile;
+        }
+        settingsUsernameInput.value = currentUserProfile.username || currentUser;
+        settingsEmailInput.value = currentUserProfile.email || "";
+        settingsCurrentPassword.value = "";
+        settingsNewPassword.value = "";
+        settingsConfirmPassword.value = "";
+        settingsModalBackdrop.classList.remove("hidden");
+      });
+
+      function closeSettingsModal() {
+        settingsModalBackdrop.classList.add("hidden");
+      }
+
+      cancelSettingsBtn.addEventListener("click", closeSettingsModal);
+
+      saveSettingsBtn.addEventListener("click", () => {
+        if (!currentUser) {
+          alert("Sign in first.");
+          return;
+        }
+        const profile = currentUserProfile || { username: currentUser, email: "", password: "" };
+
+        const newEmail = settingsEmailInput.value.trim();
+        profile.email = newEmail;
+
+        const curPass = settingsCurrentPassword.value;
+        const newPass = settingsNewPassword.value;
+        const confPass = settingsConfirmPassword.value;
+
+        if (curPass || newPass || confPass) {
+          if (profile.password && curPass !== profile.password) {
+            alert("Current password is incorrect.");
+            return;
+          }
+          if (newPass !== confPass) {
+            alert("New passwords do not match.");
+            return;
+          }
+          profile.password = newPass;
+        }
+
+        userProfiles[currentUser] = profile;
+        currentUserProfile = profile;
+        saveUserProfiles();
+        closeSettingsModal();
+        showSignedInState();
+        alert("Settings saved on this device.");
+      });
+
+      // Sign out from within Settings
+      signOutBtn.addEventListener("click", () => {
+        if (!currentUser) {
+          closeSettingsModal();
+          return;
+        }
+        if (!confirm("Sign out on this device?")) return;
+        currentUser = null;
+        currentUserProfile = null;
+        try {
+          localStorage.removeItem("orderpadUser");
+          localStorage.removeItem("orderpadCurrentUser");
+        } catch {}
+        settingsEmailInput.value = "";
+        closeSettingsModal();
+        showSignedInState();
+      });
+
+      // Header label is informational only now; tap the gear to open settings.
+      signedInLabel.addEventListener("click", () => {
+        openSettingsModal();
+      });
+
+      // start new order -> go to customer list page
+      startOrderBtn.addEventListener("click", () => {
+        if (!currentUser) {
+          showLoginModal();
+          return;
+        }
+        startCard.classList.add("hidden");
+        orderMain.classList.add("hidden");
+        customerSelectPage.classList.remove("hidden");
+        customerSearchInput.value = "";
+        renderCustomerList("");
+        customerSearchInput.focus();
+      });
+
+      // customer search typing
+      customerSearchInput.addEventListener("input", () => {
+        renderCustomerList(customerSearchInput.value || "");
+      });
+
+      // go to add item page
+      addItemBtn.addEventListener("click", () => {
+        if (!customerSelect.value) {
+          alert("Select a customer first.");
+          customerSelect.focus();
+          return;
+        }
+        orderMain.classList.add("hidden");
+        addItemPage.classList.remove("hidden");
+        // select first category automatically if exists
+        const firstCatBtn = categoryGrid.querySelector(".category-btn");
+        if (firstCatBtn && !firstCatBtn.classList.contains("active")) {
+          firstCatBtn.click();
+        }
+      });
+
+      backToOrderBtn.addEventListener("click", () => {
+        addItemPage.classList.add("hidden");
+        orderMain.classList.remove("hidden");
+      });
+
+      clearOrderBtn.addEventListener("click", clearOrder);
+
+      generateSummaryBtn.addEventListener("click", () => {
+        if (!customerSelect.value) {
+          alert("Select a customer first.");
+          return;
+        }
+        if (!cartItems.length) {
+          alert("Add at least one item to the order.");
+          return;
+        }
+        const poText = buildPoText();
+        // Show PDF-style preview without auto-downloading
+        showPoModal(poText);
+      });
+
+      closePoModalBtn.addEventListener("click", hidePoModal);
+
+      downloadPoBtn.addEventListener("click", () => {
+        const { doc, filename } = createPdfDoc();
+        doc.save(filename);
+      });
+
+      emailPoBtn.addEventListener("click", () => {
+        const subject = encodeURIComponent("New Purchase Order from 218 Supply Order Pad");
+        const body = encodeURIComponent(lastPoText || buildPoText());
+        window.location.href = "mailto:sales@218supply.com?subject=" + subject + "&body=" + body;
+      });
+
+      // Add new customer from either page
+      addCustomerBtn.addEventListener("click", openCustomerModal);
+      addCustomerFromListBtn.addEventListener("click", openCustomerModal);
+
+      cancelCustomerBtn.addEventListener("click", () => {
+        customerModalBackdrop.classList.add("hidden");
+        newCustomerNameInput.value = "";
+        newCustomerIdInput.value = "";
+      });
+
+      saveCustomerBtn.addEventListener("click", () => {
+        const name = newCustomerNameInput.value.trim();
+        const id   = newCustomerIdInput.value.trim() || "CUST-" + String((window.customers || []).length + 1000);
+        if (!name) {
+          alert("Customer name is required.");
+          return;
+        }
+        const newCust = { id, name };
+        window.customers.push(newCust);
+
+        // persist extra customers for this device
+        const base = [];
+        try {
+          const existing = localStorage.getItem("orderpadExtraCustomers");
+          if (existing) {
+            const parsed = JSON.parse(existing);
+            if (Array.isArray(parsed)) base.push(...parsed);
+          }
+        } catch {}
+        base.push(newCust);
+        saveExtraCustomers(base);
+
+        populateCustomers();
+        renderCustomerList(customerSearchInput.value || "");
+
+        customerSelect.value = id;
+        customerModalBackdrop.classList.add("hidden");
+        newCustomerNameInput.value = "";
+        newCustomerIdInput.value = "";
+
+        // If we are on the customer list page, jump straight into the order for the new customer
+        if (!customerSelectPage.classList.contains("hidden") && orderMain.classList.contains("hidden")) {
+          selectCustomerAndGoToOrder(id);
+        } else {
+          const hasCustomer = !!customerSelect.value;
+          addItemBtn.disabled = !hasCustomer;
+          generateSummaryBtn.disabled = !hasCustomer;
+        }
+      });
+
+      // Add new product
+      document.getElementById("addProductBtn").addEventListener("click", () => {
+        productModalBackdrop.classList.remove("hidden");
+        newProdNameInput.focus();
+      });
+      cancelProductBtn.addEventListener("click", () => {
+        productModalBackdrop.classList.add("hidden");
+        newProdNameInput.value = "";
+        newProdSkuInput.value = "";
+        newProdCategoryInput.value = "";
+        newProdPackInput.value = "";
+        newProdPriceInput.value = "";
+      });
+      saveProductBtn.addEventListener("click", () => {
+        const name = newProdNameInput.value.trim();
+        const sku  = newProdSkuInput.value.trim() || "SKU-" + String((window.products || []).length + 1000);
+        const category = (newProdCategoryInput.value.trim() || "OTHER").toUpperCase();
+        const pack = newProdPackInput.value.trim();
+        const price = parseFloat(newProdPriceInput.value) || 0;
+        if (!name) {
+          alert("Product name is required.");
+          return;
+        }
+        const newProd = { sku, name, category, subcategory: "", packSize: pack, price };
+        window.products.push(newProd);
+
+        // persist extra products for this device
+        const base = [];
+        try {
+          const existing = localStorage.getItem("orderpadExtraProducts");
+          if (existing) {
+            const parsed = JSON.parse(existing);
+            if (Array.isArray(parsed)) base.push(...parsed);
+          }
+        } catch {}
+        base.push(newProd);
+        saveExtraProducts(base);
+
+        buildCategories();
+        productModalBackdrop.classList.add("hidden");
+        newProdNameInput.value = "";
+        newProdSkuInput.value = "";
+        newProdCategoryInput.value = "";
+        newProdPackInput.value = "";
+        newProdPriceInput.value = "";
+      });
+    });
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/sw.js").catch(function (err) {
+          console.log("Service worker registration failed:", err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
