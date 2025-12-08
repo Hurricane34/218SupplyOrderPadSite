@@ -394,6 +394,21 @@
       gap: 8px;
       margin-top: 10px;
     }
+.clear-order-row {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.clear-order-link {
+  background: none;
+  border: none;
+  color: #b91c1c;        /* nice red, readable */
+  font-size: 0.8rem;
+  padding: 4px 6px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
     /* MOBILE TWEAKS */
     @media (max-width: 600px) {
@@ -673,9 +688,15 @@
 </div>
 
 <div id="generateSection" class="generate-section hidden">
-  <button class="btn-secondary generate-btn" id="generateSummaryBtn">Generate Purchase Order PDF</button>
-  <button class="btn-link" id="clearOrderBtn">Clear Order</button>
+  <button class="btn-secondary generate-btn" id="generateSummaryBtn">
+    Generate Purchase Order PDF
+  </button>
+
+  <div class="clear-order-row">
+    <button class="clear-order-link" id="clearOrderBtn">Clear Order</button>
+  </div>
 </div>
+
 
       <button class="order-add-fab" id="goToAddItemBtn">Add New Item</button>
     </div>
