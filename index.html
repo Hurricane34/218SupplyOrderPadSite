@@ -376,23 +376,6 @@
       max-height: 92vh;
       overflow-y: auto;
     }
-    .customer-profile-modal {
-      min-height: 460px;
-      display: flex;
-      flex-direction: column;
-    }
-    .customer-profile-modal .tab-panel {
-      flex: 1;
-      min-height: 0;
-    }
-    .customer-profile-modal #customerProfileOrders {
-      height: 100%;
-      max-height: none;
-    }
-    .customer-profile-modal .modal-actions {
-      margin-top: 12px;
-    }
-
     .modal h2 {
       margin-top: 0;
       font-size: 1rem;
@@ -403,36 +386,6 @@
       font-size: 0.82rem;
       color: #6b7280;
     }
-    .tab-header {
-      display: flex;
-      gap: 6px;
-      margin: 8px 0 10px;
-      padding: 2px;
-      border-radius: 999px;
-      background: #f3f4f6;
-    }
-    .tab-button {
-      flex: 1;
-      border: none;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      background: transparent;
-      color: #4b5563;
-      font-weight: 500;
-    }
-    .tab-button.active {
-      background: var(--accent-alt);
-      color: #ffffff;
-    }
-    .tab-panel {
-      display: none;
-    }
-    .tab-panel.active {
-      display: block;
-    }
-
     .modal textarea {
       width: 100%;
       min-height: 220px;
@@ -866,74 +819,60 @@
 
   <!-- Customer profile modal -->
   <div id="customerProfileModalBackdrop" class="modal-backdrop hidden">
-    <div class="modal customer-profile-modal">
+    <div class="modal">
       <h2>Customer Profile</h2>
+      <p>View and update this customer's profile and see their order history on this device.</p>
 
       <div id="customerProfileSummary" class="muted" style="margin-bottom:8px;"></div>
 
-      <div class="tab-header">
-        <button type="button" id="customerInfoTabBtn" class="tab-button active" data-tab="info">
-          Customer Information
-        </button>
-        <button type="button" id="customerHistoryTabBtn" class="tab-button" data-tab="history">
-          Customer Order History
-        </button>
-      </div>
+      <h3 style="margin:8px 0 4px;font-size:0.9rem;">Contact & Details</h3>
+      <label for="profileContactName">Contact Name</label>
+      <input type="text" id="profileContactName" />
 
-      <div id="customerInfoTab" class="tab-panel active">
-        <h3 style="margin:8px 0 4px;font-size:0.9rem;">Contact &amp; Details</h3>
-        <label for="profileContactName">Contact Name</label>
-        <input type="text" id="profileContactName" />
+      <label for="profilePhone">Phone</label>
+      <input type="text" id="profilePhone" />
 
-        <label for="profilePhone">Phone</label>
-        <input type="text" id="profilePhone" />
+      <label for="profileEmail">Email</label>
+      <input type="email" id="profileEmail" />
 
-        <label for="profileEmail">Email</label>
-        <input type="email" id="profileEmail" />
+      <label for="profileNotes">Notes</label>
+      <textarea id="profileNotes" style="min-height:80px;"></textarea>
 
-        <label for="profileNotes">Notes</label>
-        <textarea id="profileNotes" style="min-height:80px;"></textarea>
-
-        <div class="row" style="margin-top:8px;">
-          <div style="display:none;">
-            <label for="profilePriceLevel">Price Level</label>
-            <input type="text" id="profilePriceLevel" placeholder="e.g. Standard, Bar, VIP" />
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;margin-top:0;">
-            <input type="checkbox" id="profileTaxExempt" style="width:auto;" />
-            <label for="profileTaxExempt" style="margin:0;font-weight:500;">Tax Exempt</label>
-          </div>
+      <div class="row" style="margin-top:8px;">
+        <div>
+          <label for="profilePriceLevel">Price Level</label>
+          <input type="text" id="profilePriceLevel" placeholder="e.g. Standard, Bar, VIP" />
         </div>
-
-        <h3 style="margin:10px 0 4px;font-size:0.9rem;">Address</h3>
-        <label for="billingStreet">Street</label>
-        <input type="text" id="billingStreet" />
-        <div class="row">
-          <div>
-            <label for="billingCity">City</label>
-            <input type="text" id="billingCity" />
-          </div>
-          <div>
-            <label for="billingState">State</label>
-            <input type="text" id="billingState" />
-          </div>
-          <div>
-            <label for="billingZip">ZIP</label>
-            <input type="text" id="billingZip" />
-          </div>
-        </div>
-
-        <div style="display:none;">
-          <label for="profileLabels">Labels (comma-separated)</label>
-          <input type="text" id="profileLabels" placeholder="e.g. bar, downtown, late-night" />
+        <div style="display:flex;align-items:center;gap:6px;margin-top:22px;">
+          <input type="checkbox" id="profileTaxExempt" style="width:auto;" />
+          <label for="profileTaxExempt" style="margin:0;font-weight:500;">Tax Exempt</label>
         </div>
       </div>
 
-      <div id="customerHistoryTab" class="tab-panel">
-        <h3 style="margin:10px 0 4px;font-size:0.9rem;">Order History</h3>
-        <div id="customerProfileOrders" style="overflow-y:auto;border:1px solid #e5e7eb;border-radius:8px;padding:6px 8px;background:#f9fafb;font-size:0.8rem;">
-          <!-- filled by script -->
+      <h3 style="margin:10px 0 4px;font-size:0.9rem;">Address</h3>
+      <label for="billingStreet">Street</label>
+      <input type="text" id="billingStreet" />
+      <div class="row">
+        <div>
+          <label for="billingCity">City</label>
+          <input type="text" id="billingCity" />
         </div>
+        <div>
+          <label for="billingState">State</label>
+          <input type="text" id="billingState" />
+        </div>
+        <div>
+          <label for="billingZip">ZIP</label>
+          <input type="text" id="billingZip" />
+        </div>
+      </div>
+
+      <label for="profileLabels" style="margin-top:8px;">Labels (comma-separated)</label>
+      <input type="text" id="profileLabels" placeholder="e.g. bar, downtown, late-night" />
+
+      <h3 style="margin:10px 0 4px;font-size:0.9rem;">Order History</h3>
+      <div id="customerProfileOrders" style="max-height:180px;overflow-y:auto;border:1px solid #e5e7eb;border-radius:8px;padding:6px 8px;background:#f9fafb;font-size:0.8rem;">
+        <!-- filled by script -->
       </div>
 
       <div class="modal-actions">
@@ -971,32 +910,6 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const API_BASE = "http://100.71.83.7:8000";
-
-
-      async function apiPost(path, payload) {
-        try {
-          await fetch(API_BASE + path, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-        } catch (err) {
-          console.warn("API POST failed", path, err);
-        }
-      }
-
-      async function apiGet(path) {
-        try {
-          const res = await fetch(API_BASE + path);
-          if (!res.ok) throw new Error("Bad status " + res.status);
-          return await res.json();
-        } catch (err) {
-          console.warn("API GET failed", path, err);
-          return null;
-        }
-      }
-
       const startCard              = document.getElementById("startCard");
       const startOrderBtn          = document.getElementById("startOrderBtn");
       const orderMain              = document.getElementById("orderMain");
@@ -1079,10 +992,6 @@
       const customerProfileOrdersEl      = document.getElementById("customerProfileOrders");
       const closeCustomerProfileBtn      = document.getElementById("closeCustomerProfileBtn");
       const saveCustomerProfileBtn       = document.getElementById("saveCustomerProfileBtn");
-      const customerInfoTabBtn           = document.getElementById("customerInfoTabBtn");
-      const customerHistoryTabBtn        = document.getElementById("customerHistoryTabBtn");
-      const customerInfoTabPanel         = document.getElementById("customerInfoTab");
-      const customerHistoryTabPanel      = document.getElementById("customerHistoryTab");
 
       const productModalBackdrop  = document.getElementById("productModalBackdrop");
       const newProdNameInput      = document.getElementById("newProdName");
@@ -1199,6 +1108,53 @@
             if (Array.isArray(parsed)) window.products.push(...parsed);
           }
         } catch {}
+
+        // Seed CHIPS products (bag prices + one mixed case)
+        window.products = window.products || [];
+        const chipSeedProducts = [
+          { sku: "CHP-FL-ORIG",  name: "Frito Original",                  category: "CHIPS", subcategory: "FRITO LAY", packSize: "64/cs • 2 oz",    price: 1.00 },
+          { sku: "CHP-FL-CHILI", name: "Frito Chili Cheese",             category: "CHIPS", subcategory: "FRITO LAY", packSize: "64/cs • 2 oz",    price: 1.00 },
+          { sku: "CHP-FL-HBBQ",  name: "Frito HBBQ Twist",               category: "CHIPS", subcategory: "FRITO LAY", packSize: "64/cs • 2 oz",    price: 1.00 },
+          { sku: "CHP-FL-FUNY",  name: "Funyuns",                        category: "CHIPS", subcategory: "FRITO LAY", packSize: "64/cs • 1.75 oz", price: 1.00 },
+          { sku: "CHP-FL-NDOR",  name: "Nacho Doritos",                  category: "CHIPS", subcategory: "FRITO LAY", packSize: "64/cs • 1.75 oz", price: 1.00 },
+          { sku: "CHP-FL-CDOR",  name: "Cool Ranch Doritos",            category: "CHIPS", subcategory: "FRITO LAY", packSize: "64/cs • 1.75 oz", price: 1.00 },
+          { sku: "CHP-FL-CHET",  name: "Cheetos",                        category: "CHIPS", subcategory: "FRITO LAY", packSize: "64/cs • 1.75 oz", price: 1.00 },
+          { sku: "CHP-FL-PRET",  name: "Rold Gold Pretzels Tiny Twists", category: "CHIPS", subcategory: "FRITO LAY", packSize: "64/cs • 1.75 oz", price: 1.00 },
+          { sku: "CHP-FL-RUFF",  name: "Ruffles Cheddar & Sour Cream",   category: "CHIPS", subcategory: "FRITO LAY", packSize: "64/cs • 1.75 oz", price: 1.00 },
+
+          { sku: "CHP-OD-ORIG",  name: "Old Dutch Original Potato Chips", category: "CHIPS", subcategory: "OLD DUTCH", packSize: "25/cs • 2 oz",   price: 1.00 },
+          { sku: "CHP-OD-SCNO",  name: "Old Dutch Sour Cream & Onion",    category: "CHIPS", subcategory: "OLD DUTCH", packSize: "25/cs • 2 oz",   price: 1.00 },
+          { sku: "CHP-OD-BBQ",   name: "Old Dutch Barbeque",              category: "CHIPS", subcategory: "OLD DUTCH", packSize: "25/cs • 2 oz",   price: 1.00 },
+          { sku: "CHP-OD-OAG",   name: "Old Dutch Onion & Garlic",        category: "CHIPS", subcategory: "OLD DUTCH", packSize: "25/cs • 2 oz",   price: 1.00 },
+          { sku: "CHP-OD-DILL",  name: "Old Dutch Dill Pickle",           category: "CHIPS", subcategory: "OLD DUTCH", packSize: "25/cs • 2 oz",   price: 1.00 },
+
+          { sku: "CHP-TGIF-BAC", name: "TGIF Cheddar Bacon Skins",        category: "CHIPS", subcategory: "INVENTURE", packSize: "55/cs",          price: 1.00 },
+          { sku: "CHP-TGIF-SCCH",name: "TGIF Sour Cream & Cheddar Skins", category: "CHIPS", subcategory: "INVENTURE", packSize: "55/cs",          price: 1.00 },
+
+          { sku: "CHP-CHEEZ-ORIG", name: "Cheez-It Original",             category: "CHIPS", subcategory: "GENERAL MILLS/KEEBLER", packSize: "60/cs • 1.75 oz", price: 1.00 },
+          { sku: "CHP-CHEEZ-JACK", name: "Cheez-It Cheddar Jack",         category: "CHIPS", subcategory: "GENERAL MILLS/KEEBLER", packSize: "60/cs • 1.75 oz", price: 1.00 },
+
+          { sku: "CHP-SAL-ROUND", name: "Salista's Tortilla Rounds",      category: "CHIPS", subcategory: "SALISTA'S", packSize: "50/cs • 1 oz",   price: 1.00 },
+          { sku: "CHP-SAL-SPICY", name: "Spicy Salista's Tortilla Rounds",category: "CHIPS", subcategory: "SALISTA'S", packSize: "50/cs • 1 oz",   price: 1.00 },
+
+          { sku: "CHP-EAR-125-CHED",  name: "Earl's Cheddar Cheese Popcorn ($1.25 SRP)", category: "CHIPS", subcategory: "EARL'S $1.25", packSize: "36/cs • ~1.75 oz", price: 0.83 },
+          { sku: "CHP-EAR-125-CARM",  name: "Earl's Caramel Popcorn ($1.25 SRP)",        category: "CHIPS", subcategory: "EARL'S $1.25", packSize: "36/cs • ~1.75 oz", price: 0.83 },
+          { sku: "CHP-EAR-125-PUFF",  name: "Earl's Cheese Puffs ($1.25 SRP)",           category: "CHIPS", subcategory: "EARL'S $1.25", packSize: "36/cs • ~1.75 oz", price: 0.83 },
+
+          { sku: "CHP-EAR-159-CHED",  name: "Earl's Cheese Popcorn ($1.59 SRP)",         category: "CHIPS", subcategory: "EARL'S $1.59", packSize: "12/cs • 5.5 oz",  price: 1.06 },
+          { sku: "CHP-EAR-159-CARM",  name: "Earl's Caramel Corn ($1.59 SRP)",           category: "CHIPS", subcategory: "EARL'S $1.59", packSize: "18/cs • 6 oz",    price: 1.06 },
+          { sku: "CHP-EAR-159-TRIP",  name: "Earl's Triple Treat Popcorn ($1.59 SRP)",   category: "CHIPS", subcategory: "EARL'S $1.59", packSize: "24/cs",           price: 1.06 },
+
+          { sku: "CHP-OD-219-BSPIN",  name: "Old Dutch Butter Spindle Pretzels ($2.19 SRP)", category: "CHIPS", subcategory: "OLD DUTCH $2.19", packSize: "25/cs • 4 oz", price: 1.55 },
+
+          // Mixed case – sold as a 30-bag case for $30
+          { sku: "CHP-MIX-30CASE", name: "Mixed Chips Case – 30 bags", category: "CHIPS", subcategory: "MIXED", packSize: "30 bags/case", price: 30.00 }
+        ];
+
+        chipSeedProducts.forEach(seed => {
+          const exists = (window.products || []).some(p => p.sku === seed.sku);
+          if (!exists) window.products.push(seed);
+        });
 
         try {
           loadCustomerEditsAndApply();
@@ -1362,14 +1318,91 @@
         orderNoteInput.focus();
       }
 
+
+      const CATEGORY_ORDER = [
+        "BAG",
+        "CAN LINER",
+        "BAR",
+        "FILM & FOIL",
+        "CUP",
+        "CONTAINER",
+        "CUTLERY",
+        "FOOD TRAY",
+        "GLOVE",
+        "CLEAN",
+        "PAPER",
+        "PLATE",
+        "CHIPS",
+        "MEAT SNACKS",
+        "BEVERAGE",
+        "CANDY"
+      ];
+
+      function normalizeCategory(raw) {
+        if (!raw) return "OTHER";
+        const c = String(raw).trim().toUpperCase();
+
+        if (["BAG", "BAGS", "VAC PAC BAGS", "VAC PAC"].includes(c)) return "BAG";
+
+        if (["CAN LINER", "CANLINER", "CAN LINERS", "CANLINERS", "CAN LINER ", "CANLINER "].includes(c))
+          return "CAN LINER";
+
+        if (["BAR", "BAR SUPPLIES", "BAR STUFF"].includes(c))
+          return "BAR";
+
+        if (["MEAT SNACKS", "MEAT SNACK", "MEAT STICKS", "MEAT STICK", "JERKY", "BEEF JERKY"].includes(c))
+          return "MEAT SNACKS";
+
+        if (["FILM", "FOIL", "FREEZER", "FREEZER PAPER", "WRAP", "WRAPS", "FOOD WRAP"].includes(c))
+          return "FILM & FOIL";
+
+        if (["CUP", "CUPS", "BOWL", "BOWLS", "DART FOAM", "SOUFFLE", "SOUFFLÉ"].includes(c))
+          return "CUP";
+
+        if (["CONTAINER", "CONTAINERS"].includes(c))
+          return "CONTAINER";
+
+        if (["CUTLERY", "UTENSIL", "UTENSILS"].includes(c))
+          return "CUTLERY";
+
+        if (["FOOD TRAY", "TRAY", "MEAT TRAY", "MEAT TRAYS"].includes(c))
+          return "FOOD TRAY";
+
+        if (["GLOVE", "GLOVES"].includes(c))
+          return "GLOVE";
+
+        if (["CLEAN", "CLEANING", "CHEMICAL", "CHEMICALS"].includes(c))
+          return "CLEAN";
+
+        if (["PAPER", "NAPKIN", "NAPKINS", "TOILET TISSUE", "TISSUE", "TOWEL", "TOWELS"].includes(c))
+          return "PAPER";
+
+        if (["PLATE", "PLATES"].includes(c))
+          return "PLATE";
+
+        if (["STRAW", "STRAWS", "STIRRER", "STIRRERS"].includes(c))
+          return "BAR";
+
+        if (["CHIP", "CHIPS"].includes(c))
+          return "CHIPS";
+
+        if (["BEVERAGE", "BEVERAGES", "DRINK", "DRINKS", "SODA", "POP"].includes(c))
+          return "BEVERAGE";
+
+        if (["CANDY", "SWEETS"].includes(c))
+          return "CANDY";
+
+        return c; // default to normalized uppercase
+      }
+
       function buildCategories() {
         categoryGrid.innerHTML = "";
         const catsSet = new Set();
         (window.products || []).forEach(p => {
-          const c = p.category || "OTHER";
-          catsSet.add(c);
+          const norm = normalizeCategory(p.category || "OTHER");
+          catsSet.add(norm);
         });
-        const cats = Array.from(catsSet).sort();
+        const cats = CATEGORY_ORDER.filter(c => catsSet.has(c));
         cats.forEach(cat => {
           const btn = document.createElement("button");
           btn.type = "button";
@@ -1389,7 +1422,7 @@
       function showProductsForCategory(category) {
         productList.innerHTML = "";
         const filtered = (window.products || [])
-          .filter(p => (p.category || "OTHER") === category)
+          .filter(p => normalizeCategory(p.category || "OTHER") === category)
           .sort((a, b) => a.name.localeCompare(b.name));
 
         if (!filtered.length) {
@@ -1409,7 +1442,13 @@
 
           const nameEl = document.createElement("div");
           nameEl.className = "product-name";
-          nameEl.textContent = prod.name;
+          let displayName = prod.name || "";
+          if (category === "MEAT SNACKS") {
+            const price = Number(prod.price || 0);
+            const brand = Math.abs(price - 18) < 0.01 ? "Old World Meats" : "Kickass";
+            displayName = brand + " - " + displayName;
+          }
+          nameEl.textContent = displayName;
 
           const metaEl = document.createElement("div");
           metaEl.className = "product-meta";
@@ -1992,19 +2031,6 @@
         });
 
         saveCustomerProfiles();
-
-        // Also send to shared database
-        apiPost("/orders", {
-          customer_id: customerId,
-          date: dateStr,
-          note: orderNote || null,
-          salesperson: currentUser || null,
-          salesperson_email: (currentUserProfile && currentUserProfile.email) || null,
-          subtotal: totals.subtotal,
-          tax_amount: totals.taxAmount,
-          total: totals.grandTotal,
-          items: itemsSnapshot
-        });
       }
 
       let lastPoText = "";
@@ -2288,14 +2314,6 @@
         base.push(newCust);
         saveExtraCustomers(base);
 
-        // Also save to shared database (fire-and-forget)
-        apiPost("/customers/upsert", {
-          id,
-          name,
-          city: "",
-          state: ""
-        });
-
         populateCustomers();
         renderCustomerList();
 
@@ -2362,14 +2380,6 @@
           state: editingCustomerObj.state
         });
 
-        // Sync to shared database
-        apiPost("/customers/upsert", {
-          id: editingCustomerObj.id,
-          name: editingCustomerObj.name,
-          city: editingCustomerObj.city || "",
-          state: editingCustomerObj.state || ""
-        });
-
         populateCustomers();
         const updatedCustomer = (window.customers || []).find((c) => c.id === customerSelect.value);
         if (updatedCustomer) {
@@ -2387,7 +2397,6 @@
             alert("Select a customer first.");
             return;
           }
-          setCustomerProfileTab("info");
           fillCustomerProfileModal(id);
         });
       }
@@ -2400,43 +2409,8 @@
       saveCustomerProfileBtn.addEventListener("click", (evt) => {
         evt.preventDefault();
         saveCustomerProfileFromModal();
-
-        if (currentProfileCustomerId) {
-          apiPost("/customer-profiles/upsert", {
-            customer_id: currentProfileCustomerId,
-            contact_name: profileContactNameInput.value.trim() || null,
-            phone: profilePhoneInput.value.trim() || null,
-            email: profileEmailInput.value.trim() || null,
-            notes: profileNotesInput.value.trim() || null,
-            tax_exempt: !!profileTaxExemptInput.checked,
-            billing_street: billingStreetInput.value.trim() || null,
-            billing_city: billingCityInput.value.trim() || null,
-            billing_state: billingStateInput.value.trim() || null,
-            billing_zip: billingZipInput.value.trim() || null
-          });
-        }
-
         alert("Customer profile saved on this device.");
       });
-
-
-      function setCustomerProfileTab(tab) {
-        if (!customerInfoTabBtn || !customerHistoryTabBtn) return;
-
-        const selectInfo = tab === "info";
-        customerInfoTabBtn.classList.toggle("active", selectInfo);
-        customerHistoryTabBtn.classList.toggle("active", !selectInfo);
-
-        if (customerInfoTabPanel && customerHistoryTabPanel) {
-          customerInfoTabPanel.classList.toggle("active", selectInfo);
-          customerHistoryTabPanel.classList.toggle("active", !selectInfo);
-        }
-      }
-
-      if (customerInfoTabBtn && customerHistoryTabBtn) {
-        customerInfoTabBtn.addEventListener("click", () => setCustomerProfileTab("info"));
-        customerHistoryTabBtn.addEventListener("click", () => setCustomerProfileTab("history"));
-      }
 
       // Add new product
       document.getElementById("addProductBtn").addEventListener("click", () => {
@@ -2454,7 +2428,8 @@
       saveProductBtn.addEventListener("click", () => {
         const name = newProdNameInput.value.trim();
         const sku  = newProdSkuInput.value.trim() || "SKU-" + String((window.products || []).length + 1000);
-        const category = (newProdCategoryInput.value.trim() || "OTHER").toUpperCase();
+        const rawCategory = (newProdCategoryInput.value.trim() || "OTHER").toUpperCase();
+        const category = normalizeCategory(rawCategory);
         const pack = newProdPackInput.value.trim();
         const price = parseFloat(newProdPriceInput.value) || 0;
         if (!name) {
@@ -2474,15 +2449,6 @@
         } catch {}
         base.push(newProd);
         saveExtraProducts(base);
-
-        // Sync to shared database
-        apiPost("/products/upsert", {
-          sku,
-          name,
-          category,
-          packSize: pack,
-          price
-        });
 
         buildCategories();
         productModalBackdrop.classList.add("hidden");
