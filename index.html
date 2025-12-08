@@ -161,6 +161,7 @@
     input[type="number"],
     input[type="text"],
     input[type="password"],
+    input[type="email"],
     textarea {
       width: 100%;
       padding: 8px 10px;
@@ -345,6 +346,12 @@
       font-size: 0.75rem;
       color: #6b7280;
     }
+    .customer-row-city {
+      font-size: 0.8rem;
+      color: #4b5563;
+      margin-left: 8px;
+      white-space: nowrap;
+    }
 
     /* MODALS – full-screen dim like an app sheet */
     .modal-backdrop {
@@ -366,7 +373,26 @@
       width: 94%;
       max-width: 480px;
       box-shadow: 0 20px 40px rgba(15,23,42,0.5);
+      max-height: 92vh;
+      overflow-y: auto;
     }
+    .customer-profile-modal {
+      min-height: 460px;
+      display: flex;
+      flex-direction: column;
+    }
+    .customer-profile-modal .tab-panel {
+      flex: 1;
+      min-height: 0;
+    }
+    .customer-profile-modal #customerProfileOrders {
+      height: 100%;
+      max-height: none;
+    }
+    .customer-profile-modal .modal-actions {
+      margin-top: 12px;
+    }
+
     .modal h2 {
       margin-top: 0;
       font-size: 1rem;
@@ -377,6 +403,36 @@
       font-size: 0.82rem;
       color: #6b7280;
     }
+    .tab-header {
+      display: flex;
+      gap: 6px;
+      margin: 8px 0 10px;
+      padding: 2px;
+      border-radius: 999px;
+      background: #f3f4f6;
+    }
+    .tab-button {
+      flex: 1;
+      border: none;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background: transparent;
+      color: #4b5563;
+      font-weight: 500;
+    }
+    .tab-button.active {
+      background: var(--accent-alt);
+      color: #ffffff;
+    }
+    .tab-panel {
+      display: none;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+
     .modal textarea {
       width: 100%;
       min-height: 220px;
@@ -641,6 +697,8 @@
           </div>
         </div>
         <button class="btn-sm btn-ghost" id="changeCustomerBtn">Change Customer</button>
+        <button class="btn-sm btn-ghost" id="customerProfileBtn">Profile</button>
+        <button class="btn-sm btn-ghost" id="editCustomerBtn">Edit Customer</button>
       </div>
 
       <div class="order-note-row">
@@ -786,6 +844,105 @@
     </div>
   </div>
 
+  <!-- Edit customer modal -->
+  <div id="customerEditModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2>Edit Customer</h2>
+      <p>Update this customer's details on this device.</p>
+      <label for="editCustomerName">Customer Name</label>
+      <input type="text" id="editCustomerName" />
+      <label for="editCustomerId">Customer ID</label>
+      <input type="text" id="editCustomerId" />
+      <label for="editCustomerCity">City</label>
+      <input type="text" id="editCustomerCity" />
+      <label for="editCustomerState">State</label>
+      <input type="text" id="editCustomerState" />
+      <div class="modal-actions">
+        <button class="btn-ghost btn-sm" id="cancelEditCustomerBtn">Cancel</button>
+        <button class="btn-primary btn-sm" id="saveEditCustomerBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer profile modal -->
+  <div id="customerProfileModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal customer-profile-modal">
+      <h2>Customer Profile</h2>
+
+      <div id="customerProfileSummary" class="muted" style="margin-bottom:8px;"></div>
+
+      <div class="tab-header">
+        <button type="button" id="customerInfoTabBtn" class="tab-button active" data-tab="info">
+          Customer Information
+        </button>
+        <button type="button" id="customerHistoryTabBtn" class="tab-button" data-tab="history">
+          Customer Order History
+        </button>
+      </div>
+
+      <div id="customerInfoTab" class="tab-panel active">
+        <h3 style="margin:8px 0 4px;font-size:0.9rem;">Contact &amp; Details</h3>
+        <label for="profileContactName">Contact Name</label>
+        <input type="text" id="profileContactName" />
+
+        <label for="profilePhone">Phone</label>
+        <input type="text" id="profilePhone" />
+
+        <label for="profileEmail">Email</label>
+        <input type="email" id="profileEmail" />
+
+        <label for="profileNotes">Notes</label>
+        <textarea id="profileNotes" style="min-height:80px;"></textarea>
+
+        <div class="row" style="margin-top:8px;">
+          <div style="display:none;">
+            <label for="profilePriceLevel">Price Level</label>
+            <input type="text" id="profilePriceLevel" placeholder="e.g. Standard, Bar, VIP" />
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:0;">
+            <input type="checkbox" id="profileTaxExempt" style="width:auto;" />
+            <label for="profileTaxExempt" style="margin:0;font-weight:500;">Tax Exempt</label>
+          </div>
+        </div>
+
+        <h3 style="margin:10px 0 4px;font-size:0.9rem;">Address</h3>
+        <label for="billingStreet">Street</label>
+        <input type="text" id="billingStreet" />
+        <div class="row">
+          <div>
+            <label for="billingCity">City</label>
+            <input type="text" id="billingCity" />
+          </div>
+          <div>
+            <label for="billingState">State</label>
+            <input type="text" id="billingState" />
+          </div>
+          <div>
+            <label for="billingZip">ZIP</label>
+            <input type="text" id="billingZip" />
+          </div>
+        </div>
+
+        <div style="display:none;">
+          <label for="profileLabels">Labels (comma-separated)</label>
+          <input type="text" id="profileLabels" placeholder="e.g. bar, downtown, late-night" />
+        </div>
+      </div>
+
+      <div id="customerHistoryTab" class="tab-panel">
+        <h3 style="margin:10px 0 4px;font-size:0.9rem;">Order History</h3>
+        <div id="customerProfileOrders" style="overflow-y:auto;border:1px solid #e5e7eb;border-radius:8px;padding:6px 8px;background:#f9fafb;font-size:0.8rem;">
+          <!-- filled by script -->
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-ghost btn-sm" id="closeCustomerProfileBtn">Close</button>
+        <button class="btn-primary btn-sm" id="saveCustomerProfileBtn">Save Profile</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Add product modal -->
   <div id="productModalBackdrop" class="modal-backdrop hidden">
     <div class="modal">
@@ -814,6 +971,32 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const API_BASE = "http://100.71.83.7:8000";
+
+
+      async function apiPost(path, payload) {
+        try {
+          await fetch(API_BASE + path, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+        } catch (err) {
+          console.warn("API POST failed", path, err);
+        }
+      }
+
+      async function apiGet(path) {
+        try {
+          const res = await fetch(API_BASE + path);
+          if (!res.ok) throw new Error("Bad status " + res.status);
+          return await res.json();
+        } catch (err) {
+          console.warn("API GET failed", path, err);
+          return null;
+        }
+      }
+
       const startCard              = document.getElementById("startCard");
       const startOrderBtn          = document.getElementById("startOrderBtn");
       const orderMain              = document.getElementById("orderMain");
@@ -823,23 +1006,25 @@
       const customerSearchInput    = document.getElementById("customerSearchInput");
       const addCustomerFromListBtn = document.getElementById("addCustomerFromListBtn");
 
-      const customerSelect     = document.getElementById("customerSelect");
-      const orderNoteInput     = document.getElementById("orderNote");
-      const signInBtn          = document.getElementById("signInBtn");
-      const signedInLabel      = document.getElementById("signedInLabel");
-      const orderCustomerDisplay = document.getElementById("orderCustomerDisplay");
-      const changeCustomerBtn    = document.getElementById("changeCustomerBtn");
-      const addItemBtn         = document.getElementById("goToAddItemBtn");
-      const backToOrderBtn     = document.getElementById("backToOrderBtn");
-      const categoryGrid       = document.getElementById("categoryGrid");
-      const productList        = document.getElementById("productList");
-      const cartEmptyMsg       = document.getElementById("cartEmptyMsg");
-      const cartContainer      = document.getElementById("cartContainer");
-      const cartTableBody      = document.querySelector("#cartTable tbody");
-      const orderTotalCell     = document.getElementById("orderTotalCell");
-      const generateSection    = document.getElementById("generateSection");
-      const generateSummaryBtn = document.getElementById("generateSummaryBtn");
-      const clearOrderBtn      = document.getElementById("clearOrderBtn");
+      const customerSelect         = document.getElementById("customerSelect");
+      const orderNoteInput         = document.getElementById("orderNote");
+      const signInBtn              = document.getElementById("signInBtn");
+      const signedInLabel          = document.getElementById("signedInLabel");
+      const orderCustomerDisplay   = document.getElementById("orderCustomerDisplay");
+      const changeCustomerBtn      = document.getElementById("changeCustomerBtn");
+      const editCustomerBtn        = document.getElementById("editCustomerBtn");
+      const customerProfileBtn     = document.getElementById("customerProfileBtn");
+      const addItemBtn             = document.getElementById("goToAddItemBtn");
+      const backToOrderBtn         = document.getElementById("backToOrderBtn");
+      const categoryGrid           = document.getElementById("categoryGrid");
+      const productList            = document.getElementById("productList");
+      const cartEmptyMsg           = document.getElementById("cartEmptyMsg");
+      const cartContainer          = document.getElementById("cartContainer");
+      const cartTableBody          = document.querySelector("#cartTable tbody");
+      const orderTotalCell         = document.getElementById("orderTotalCell");
+      const generateSection        = document.getElementById("generateSection");
+      const generateSummaryBtn     = document.getElementById("generateSummaryBtn");
+      const clearOrderBtn          = document.getElementById("clearOrderBtn");
 
       const loginModalBackdrop    = document.getElementById("loginModalBackdrop");
       const loginUsernameInput    = document.getElementById("loginUsername");
@@ -864,11 +1049,40 @@
       const downloadPoBtn     = document.getElementById("downloadPoBtn");
       const emailPoBtn        = document.getElementById("emailPoBtn");
 
-      const customerModalBackdrop = document.getElementById("customerModalBackdrop");
-      const newCustomerNameInput  = document.getElementById("newCustomerName");
-      const newCustomerIdInput    = document.getElementById("newCustomerId");
-      const cancelCustomerBtn     = document.getElementById("cancelCustomerBtn");
-      const saveCustomerBtn       = document.getElementById("saveCustomerBtn");
+      const customerModalBackdrop   = document.getElementById("customerModalBackdrop");
+      const newCustomerNameInput    = document.getElementById("newCustomerName");
+      const newCustomerIdInput      = document.getElementById("newCustomerId");
+      const cancelCustomerBtn       = document.getElementById("cancelCustomerBtn");
+      const saveCustomerBtn         = document.getElementById("saveCustomerBtn");
+
+      const customerEditModalBackdrop = document.getElementById("customerEditModalBackdrop");
+      const editCustomerNameInput     = document.getElementById("editCustomerName");
+      const editCustomerIdInput       = document.getElementById("editCustomerId");
+      const editCustomerCityInput     = document.getElementById("editCustomerCity");
+      const editCustomerStateInput    = document.getElementById("editCustomerState");
+      const cancelEditCustomerBtn     = document.getElementById("cancelEditCustomerBtn");
+      const saveEditCustomerBtn       = document.getElementById("saveEditCustomerBtn");
+
+      const customerProfileModalBackdrop = document.getElementById("customerProfileModalBackdrop");
+      const customerProfileSummary       = document.getElementById("customerProfileSummary");
+      const profileContactNameInput      = document.getElementById("profileContactName");
+      const profilePhoneInput            = document.getElementById("profilePhone");
+      const profileEmailInput            = document.getElementById("profileEmail");
+      const profileNotesInput            = document.getElementById("profileNotes");
+      const profilePriceLevelInput       = document.getElementById("profilePriceLevel");
+      const profileTaxExemptInput        = document.getElementById("profileTaxExempt");
+      const billingStreetInput           = document.getElementById("billingStreet");
+      const billingCityInput             = document.getElementById("billingCity");
+      const billingStateInput            = document.getElementById("billingState");
+      const billingZipInput              = document.getElementById("billingZip");
+      const profileLabelsInput           = document.getElementById("profileLabels");
+      const customerProfileOrdersEl      = document.getElementById("customerProfileOrders");
+      const closeCustomerProfileBtn      = document.getElementById("closeCustomerProfileBtn");
+      const saveCustomerProfileBtn       = document.getElementById("saveCustomerProfileBtn");
+      const customerInfoTabBtn           = document.getElementById("customerInfoTabBtn");
+      const customerHistoryTabBtn        = document.getElementById("customerHistoryTabBtn");
+      const customerInfoTabPanel         = document.getElementById("customerInfoTab");
+      const customerHistoryTabPanel      = document.getElementById("customerHistoryTab");
 
       const productModalBackdrop  = document.getElementById("productModalBackdrop");
       const newProdNameInput      = document.getElementById("newProdName");
@@ -879,12 +1093,15 @@
       const cancelProductBtn      = document.getElementById("cancelProductBtn");
       const saveProductBtn        = document.getElementById("saveProductBtn");
 
-      const addCustomerBtn = document.getElementById("addCustomerBtn"); // optional in case you add a header button later
+      const addCustomerBtn = document.getElementById("addCustomerBtn"); // optional header button
 
       let currentUser = null;
       let currentUserProfile = null;
       let userProfiles = {};
       let cartItems = [];
+      let customerProfiles = {};
+      let editingCustomerObj = null;
+      let currentProfileCustomerId = null;
 
       // ---- helpers ----
       function formatMoney(n) {
@@ -914,6 +1131,29 @@
         }
       }
 
+      function loadCustomerProfiles() {
+        try {
+          const raw = localStorage.getItem("orderpadCustomerProfiles");
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object") {
+              customerProfiles = parsed;
+            }
+          }
+        } catch (e) {
+          console.warn("Could not load customer profiles", e);
+          customerProfiles = {};
+        }
+      }
+
+      function saveCustomerProfiles() {
+        try {
+          localStorage.setItem("orderpadCustomerProfiles", JSON.stringify(customerProfiles));
+        } catch (e) {
+          console.warn("Could not save customer profiles", e);
+        }
+      }
+
       function showSignedInState() {
         if (currentUser && currentUserProfile) {
           signInBtn.style.display = "none";
@@ -929,6 +1169,7 @@
       function loadLocalData() {
         try {
           loadUserProfiles();
+          loadCustomerProfiles();
           const storedUser = localStorage.getItem("orderpadUser") || localStorage.getItem("orderpadCurrentUser");
           if (storedUser) {
             currentUser = storedUser;
@@ -958,6 +1199,12 @@
             if (Array.isArray(parsed)) window.products.push(...parsed);
           }
         } catch {}
+
+        try {
+          loadCustomerEditsAndApply();
+        } catch (e) {
+          console.warn("Unable to apply customer edits", e);
+        }
       }
 
       function saveExtraCustomers(customers) {
@@ -972,15 +1219,49 @@
         } catch {}
       }
 
-      function showLoginModal() {
-        loginModalBackdrop.classList.remove("hidden");
-        loginUsernameInput.focus();
+      const CUSTOMER_EDITS_KEY = "orderpadCustomerEdits";
+
+      let customerEdits = {};
+
+      function loadCustomerEditsAndApply() {
+        customerEdits = {};
+        try {
+          const stored = localStorage.getItem(CUSTOMER_EDITS_KEY);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed && typeof parsed === "object") {
+              customerEdits = parsed;
+            }
+          }
+        } catch (e) {
+          console.warn("Unable to load customer edits", e);
+          customerEdits = {};
+        }
+
+        if (Array.isArray(window.customers)) {
+          window.customers.forEach((c) => {
+            const edit = customerEdits[c.id];
+            if (edit) {
+              if (edit.name)  c.name  = edit.name;
+              if (edit.city)  c.city  = edit.city;
+              if (edit.state) c.state = edit.state;
+            }
+          });
+        }
       }
 
-      function hideLoginModal() {
-        loginModalBackdrop.classList.add("hidden");
-        loginUsernameInput.value = "";
-        loginPasswordInput.value = "";
+      function saveCustomerEditFor(id, data) {
+        if (!id) return;
+        if (!customerEdits || typeof customerEdits !== "object") {
+          customerEdits = {};
+        }
+        const existing = customerEdits[id] || {};
+        customerEdits[id] = Object.assign({}, existing, data || {});
+        try {
+          localStorage.setItem(CUSTOMER_EDITS_KEY, JSON.stringify(customerEdits));
+        } catch (e) {
+          console.warn("Unable to save customer edits", e);
+        }
       }
 
       function getSortedCustomers() {
@@ -1000,45 +1281,67 @@
         }
       }
 
-      function renderCustomerList(filterText = "") {
-        const filter = filterText.toLowerCase();
-        const all = getSortedCustomers().filter(c =>
-          (c.name || "").toLowerCase().includes(filter) ||
-          (c.id || "").toLowerCase().includes(filter)
-        );
-        customerList.innerHTML = "";
-        if (!all.length) {
-          const p = document.createElement("p");
-          p.className = "muted";
-          p.textContent = "No customers match your search.";
-          customerList.appendChild(p);
+      function renderCustomerList() {
+        const listEl = document.getElementById("customerList");
+        if (!listEl) return;
+
+        const search = (customerSearchInput.value || "").toLowerCase();
+        const all = window.customers || [];
+        listEl.innerHTML = "";
+
+        const filtered = all.filter((c) => {
+          const name = (c.name || "").toLowerCase();
+          const id = (c.id || "").toLowerCase();
+          const city = (c.city || "").toLowerCase();
+          const state = (c.state || "").toLowerCase();
+          return (
+            !search ||
+            name.includes(search) ||
+            id.includes(search) ||
+            city.includes(search) ||
+            state.includes(search)
+          );
+        });
+
+        if (!filtered.length) {
+          const empty = document.createElement("div");
+          empty.textContent = "No customers found.";
+          empty.className = "muted";
+          listEl.appendChild(empty);
           return;
         }
-        all.forEach(c => {
+
+        filtered.forEach((c) => {
           const row = document.createElement("div");
           row.className = "customer-row";
+          row.dataset.customerId = c.id;
 
           const main = document.createElement("div");
           main.className = "customer-row-main";
 
           const nameEl = document.createElement("div");
           nameEl.className = "customer-row-name";
-          nameEl.textContent = c.name;
-
-          const idEl = document.createElement("div");
-          idEl.className = "customer-row-id";
-          idEl.textContent = c.id || "";
+          nameEl.textContent = c.name || c.id;
 
           main.appendChild(nameEl);
-          if (c.id) main.appendChild(idEl);
-
           row.appendChild(main);
+
+          const cityLabel =
+            (c && c.city ? c.city : "") +
+            (c && c.state ? (c.city ? ", " : "") + c.state : "");
+
+          if (cityLabel) {
+            const cityEl = document.createElement("div");
+            cityEl.className = "customer-row-city";
+            cityEl.textContent = cityLabel;
+            row.appendChild(cityEl);
+          }
 
           row.addEventListener("click", () => {
             selectCustomerAndGoToOrder(c.id);
           });
 
-          customerList.appendChild(row);
+          listEl.appendChild(row);
         });
       }
 
@@ -1165,48 +1468,54 @@
       }
 
       function renderCart() {
+        const cartTableBody = document.querySelector("#cartTable tbody");
+        const cartContainer = document.getElementById("cartContainer");
+        const cartEmptyMsg = document.getElementById("cartEmptyMsg");
+        const orderTotalCell = document.getElementById("orderTotalCell");
+        const generateSection = document.getElementById("generateSection");
+
         cartTableBody.innerHTML = "";
-        if (!cartItems.length) {
-          cartEmptyMsg.style.display = "block";
+
+        if (cartItems.length === 0) {
           cartContainer.style.display = "none";
+          cartEmptyMsg.style.display = "block";
           orderTotalCell.textContent = "$0.00";
           generateSection.classList.add("hidden");
           return;
         }
-        cartEmptyMsg.style.display = "none";
-        cartContainer.style.display = "block";
 
-        let total = 0;
+        cartContainer.style.display = "block";
+        cartEmptyMsg.style.display = "none";
+
         cartItems.forEach((item, index) => {
           const tr = document.createElement("tr");
-
           const tdProd = document.createElement("td");
-          tdProd.innerHTML = `<strong>${item.name}</strong><br><span class="muted">SKU ${item.sku} • ${item.packSize}</span>`;
-
           const tdQty = document.createElement("td");
-          tdQty.className = "text-right";
-          tdQty.textContent = item.qty;
-
           const tdPrice = document.createElement("td");
-          tdPrice.className = "text-right";
-          tdPrice.textContent = formatMoney(item.price);
-
-          const lineTotal = item.price * item.qty;
-          total += lineTotal;
           const tdLine = document.createElement("td");
-          tdLine.className = "text-right";
-          tdLine.textContent = formatMoney(lineTotal);
-
           const tdRemove = document.createElement("td");
+
+          tdProd.textContent = `${item.sku} – ${item.name}`;
+          tdQty.textContent = item.qty;
+          tdQty.className = "text-right";
+          tdPrice.textContent = formatMoney(item.price);
+          tdPrice.className = "text-right";
+
+          const priceCents = Math.round((item.price || 0) * 100);
+          const lineTotalCents = priceCents * item.qty;
+          const lineTotal = lineTotalCents / 100;
+          tdLine.textContent = formatMoney(lineTotal);
+          tdLine.className = "text-right";
+
           const removeBtn = document.createElement("button");
-          removeBtn.type = "button";
-          removeBtn.className = "btn-ghost btn-sm";
-          removeBtn.textContent = "X";
+          removeBtn.textContent = "×";
+          removeBtn.className = "btn-sm btn-ghost";
           removeBtn.addEventListener("click", () => {
             cartItems.splice(index, 1);
             renderCart();
           });
           tdRemove.appendChild(removeBtn);
+          tdRemove.className = "text-right";
 
           tr.appendChild(tdProd);
           tr.appendChild(tdQty);
@@ -1217,7 +1526,8 @@
           cartTableBody.appendChild(tr);
         });
 
-        orderTotalCell.textContent = formatMoney(total);
+        const totals = computeTotals();
+        orderTotalCell.textContent = formatMoney(totals.subtotal);
         generateSection.classList.remove("hidden");
       }
 
@@ -1231,6 +1541,26 @@
         orderNoteInput.value = "";
         addItemBtn.disabled = true;
         generateSummaryBtn.disabled = true;
+      }
+
+      function computeTotals() {
+        let subtotalCents = 0;
+
+        cartItems.forEach((item) => {
+          const priceCents = Math.round((item.price || 0) * 100);
+          const lineTotalCents = priceCents * item.qty;
+          subtotalCents += lineTotalCents;
+        });
+
+        const taxRate = 0.07375;
+        const taxCents = Math.round(subtotalCents * taxRate);
+        const grandCents = subtotalCents + taxCents;
+
+        return {
+          subtotal: subtotalCents / 100,
+          taxAmount: taxCents / 100,
+          grandTotal: grandCents / 100
+        };
       }
 
       function buildPoText() {
@@ -1264,11 +1594,10 @@
           );
         });
 
-        const subtotal =
-          cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
-        const taxRate = 0.07375;
-        const taxAmount = subtotal * taxRate;
-        const grandTotal = subtotal + taxAmount;
+        const totals = computeTotals();
+        const subtotal = totals.subtotal;
+        const taxAmount = totals.taxAmount;
+        const grandTotal = totals.grandTotal;
 
         const footer = [
           "",
@@ -1297,7 +1626,7 @@
         const steps = 40;
         for (let i = 0; i < steps; i++) {
           const t = i / (steps - 1);
-          const r = Math.round(122 + (31 - 122) * t); // from #7a1b1b to #1f4d32
+          const r = Math.round(122 + (31 - 122) * t); // #7a1b1b -> #1f4d32
           const g = Math.round(27  + (77 - 27)  * t);
           const b = Math.round(27  + (50 - 27)  * t);
           const x = (pageWidth / steps) * i;
@@ -1305,7 +1634,7 @@
           doc.rect(x, 0, pageWidth / steps + 1, headerH, "F");
         }
 
-        // Header text (white, on left)
+        // Header text
         doc.setTextColor(255, 255, 255);
         doc.setFont("helvetica", "bold");
         doc.setFontSize(18);
@@ -1407,7 +1736,7 @@
           y += rowHeight;
         });
 
-        // Totals (with sales tax)
+        // Totals
         const taxRate = 0.07375;
         const taxAmount = subtotal * taxRate;
         const grandTotal = subtotal + taxAmount;
@@ -1418,7 +1747,6 @@
           y = margin;
         }
 
-        // Right-aligned money column for easier reading
         const labelX = pageWidth - margin - 140;
         const amountX = pageWidth - margin;
 
@@ -1441,6 +1769,242 @@
 
         const filename = `PO-${customerId || "NO-CUSTOMER"}-${dateStr}.pdf`;
         return { doc, filename };
+      }
+
+      function getOrCreateCustomerProfile(customerId) {
+        if (!customerId) return null;
+        if (!customerProfiles || typeof customerProfiles !== "object") {
+          customerProfiles = {};
+        }
+        if (!customerProfiles[customerId]) {
+          const baseCust = (window.customers || []).find(c => c.id === customerId) || {};
+          customerProfiles[customerId] = {
+            id: customerId,
+            customerName: baseCust.name || "",
+            contactName: "",
+            phone: "",
+            email: "",
+            notes: "",
+            taxExempt: false,
+            priceLevel: "",
+            billingStreet: "",
+            billingCity: "",
+            billingState: "",
+            billingZip: "",
+            labels: "",
+            orders: []
+          };
+        }
+        return customerProfiles[customerId];
+      }
+
+      function computeProfileStats(profile) {
+        if (!profile || !Array.isArray(profile.orders)) {
+          return {
+            lastOrderDate: null,
+            totalThisYear: 0
+          };
+        }
+        let lastOrderDate = null;
+        let totalThisYear = 0;
+        const currentYear = String(new Date().getFullYear());
+
+        profile.orders.forEach(o => {
+          if (o.date && (!lastOrderDate || o.date > lastOrderDate)) {
+            lastOrderDate = o.date;
+          }
+          if (o.date && o.date.startsWith(currentYear) && typeof o.total === "number") {
+            totalThisYear += o.total;
+          }
+        });
+
+        return { lastOrderDate, totalThisYear };
+      }
+
+      function renderCustomerProfileOrders(profile) {
+        customerProfileOrdersEl.innerHTML = "";
+        if (!profile || !Array.isArray(profile.orders) || !profile.orders.length) {
+          const empty = document.createElement("div");
+          empty.className = "muted";
+          empty.textContent = "No orders saved for this customer on this device yet.";
+          customerProfileOrdersEl.appendChild(empty);
+          return;
+        }
+
+        const list = document.createElement("div");
+
+        profile.orders
+          .slice()
+          .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
+          .forEach((order) => {
+            const row = document.createElement("div");
+            row.style.padding = "4px 0";
+            row.style.borderBottom = "1px solid #e5e7eb";
+
+            const line1 = document.createElement("div");
+            line1.style.fontWeight = "600";
+            const dateLabel = order.date || "Unknown date";
+            const itemsCount = Array.isArray(order.items) ? order.items.length : 0;
+            const totalStr = typeof order.total === "number" ? formatMoney(order.total) : "$0.00";
+            line1.textContent = `${dateLabel} – ${itemsCount} items – ${totalStr}`;
+
+            const line2 = document.createElement("div");
+            line2.className = "muted";
+            const note = order.note ? `Notes: ${order.note}` : "";
+            line2.textContent = note;
+
+            row.appendChild(line1);
+            if (note) {
+              row.appendChild(line2);
+            }
+            list.appendChild(row);
+          });
+
+        customerProfileOrdersEl.appendChild(list);
+      }
+
+      function fillCustomerProfileModal(customerId) {
+        const customer = (window.customers || []).find(c => c.id === customerId);
+        const profile = getOrCreateCustomerProfile(customerId);
+        currentProfileCustomerId = customerId;
+
+        profile.customerName = (customer && customer.name) || profile.customerName || "";
+
+        // Autofill city/state from customer if empty in profile
+        if (customer) {
+          if (!profile.billingCity && customer.city) {
+            profile.billingCity = customer.city;
+          }
+          if (!profile.billingState && customer.state) {
+            profile.billingState = customer.state;
+          }
+        }
+
+        const stats = computeProfileStats(profile);
+        const summaryParts = [];
+        summaryParts.push(`Customer ID: ${customerId}`);
+        if (customer && (customer.city || customer.state)) {
+          const loc = (customer.city || "") + (customer.state ? (customer.city ? ", " : "") + customer.state : "");
+          if (loc) summaryParts.push(`Location: ${loc}`);
+        }
+        if (stats.lastOrderDate) {
+          summaryParts.push(`Last order: ${stats.lastOrderDate}`);
+        } else {
+          summaryParts.push("Last order: none yet");
+        }
+        summaryParts.push(`Total this year: ${formatMoney(stats.totalThisYear)}`);
+        customerProfileSummary.textContent = summaryParts.join(" • ");
+
+        profileContactNameInput.value = profile.contactName || "";
+        profilePhoneInput.value       = profile.phone || "";
+        profileEmailInput.value       = profile.email || "";
+        profileNotesInput.value       = profile.notes || "";
+        profilePriceLevelInput.value  = profile.priceLevel || "";
+        profileTaxExemptInput.checked = !!profile.taxExempt;
+
+        billingStreetInput.value = profile.billingStreet || "";
+        billingCityInput.value   = profile.billingCity || "";
+        billingStateInput.value  = profile.billingState || "";
+        billingZipInput.value    = profile.billingZip || "";
+
+        profileLabelsInput.value = profile.labels || "";
+
+        renderCustomerProfileOrders(profile);
+
+        customerProfileModalBackdrop.classList.remove("hidden");
+      }
+
+      function saveCustomerProfileFromModal() {
+        if (!currentProfileCustomerId) return;
+        const profile = getOrCreateCustomerProfile(currentProfileCustomerId);
+        if (!profile) return;
+
+        profile.contactName   = profileContactNameInput.value.trim();
+        profile.phone         = profilePhoneInput.value.trim();
+        profile.email         = profileEmailInput.value.trim();
+        profile.notes         = profileNotesInput.value.trim();
+        profile.priceLevel    = profilePriceLevelInput.value.trim();
+        profile.taxExempt     = !!profileTaxExemptInput.checked;
+
+        profile.billingStreet = billingStreetInput.value.trim();
+        profile.billingCity   = billingCityInput.value.trim();
+        profile.billingState  = billingStateInput.value.trim();
+        profile.billingZip    = billingZipInput.value.trim();
+
+        profile.labels        = profileLabelsInput.value.trim();
+
+        saveCustomerProfiles();
+
+        const customer = (window.customers || []).find(c => c.id === currentProfileCustomerId);
+        const stats = computeProfileStats(profile);
+        const summaryParts = [];
+        summaryParts.push(`Customer ID: ${currentProfileCustomerId}`);
+        if (customer && (customer.city || customer.state)) {
+          const loc = (customer.city || "") + (customer.state ? (customer.city ? ", " : "") + customer.state : "");
+          if (loc) summaryParts.push(`Location: ${loc}`);
+        }
+        if (stats.lastOrderDate) {
+          summaryParts.push(`Last order: ${stats.lastOrderDate}`);
+        } else {
+          summaryParts.push("Last order: none yet");
+        }
+        summaryParts.push(`Total this year: ${formatMoney(stats.totalThisYear)}`);
+        customerProfileSummary.textContent = summaryParts.join(" • ");
+      }
+
+      function closeCustomerProfileModal() {
+        currentProfileCustomerId = null;
+        customerProfileModalBackdrop.classList.add("hidden");
+      }
+
+      function saveOrderToCustomerProfile() {
+        const customerId = customerSelect.value || "";
+        if (!customerId) return;
+        const profile = getOrCreateCustomerProfile(customerId);
+        if (!profile) return;
+
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10);
+        const totals = computeTotals();
+        const orderNote = orderNoteInput.value || "";
+
+        const itemsSnapshot = cartItems.map(item => ({
+          sku: item.sku,
+          name: item.name,
+          packSize: item.packSize,
+          price: item.price,
+          qty: item.qty
+        }));
+
+        const customerObj = (window.customers || []).find(c => c.id === customerId);
+        if (customerObj && customerObj.name) {
+          profile.customerName = customerObj.name;
+        }
+
+        if (!Array.isArray(profile.orders)) profile.orders = [];
+        profile.orders.push({
+          date: dateStr,
+          note: orderNote,
+          items: itemsSnapshot,
+          subtotal: totals.subtotal,
+          taxAmount: totals.taxAmount,
+          total: totals.grandTotal
+        });
+
+        saveCustomerProfiles();
+
+        // Also send to shared database
+        apiPost("/orders", {
+          customer_id: customerId,
+          date: dateStr,
+          note: orderNote || null,
+          salesperson: currentUser || null,
+          salesperson_email: (currentUserProfile && currentUserProfile.email) || null,
+          subtotal: totals.subtotal,
+          tax_amount: totals.taxAmount,
+          total: totals.grandTotal,
+          items: itemsSnapshot
+        });
       }
 
       let lastPoText = "";
@@ -1467,14 +2031,12 @@
 
       // ---- event wiring ----
 
-      // sign-in remembered per device & data load
       loadLocalData();
       populateCustomers();
       buildCategories();
       renderCart();
-      renderCustomerList("");
+      renderCustomerList();
 
-      // disable actions until a customer is picked
       addItemBtn.disabled = true;
       generateSummaryBtn.disabled = true;
 
@@ -1484,8 +2046,16 @@
         generateSummaryBtn.disabled = !hasCustomer;
       });
 
-      signInBtn.addEventListener("click", showLoginModal);
-      cancelLoginBtn.addEventListener("click", hideLoginModal);
+      // sign in
+      signInBtn.addEventListener("click", () => {
+        loginModalBackdrop.classList.remove("hidden");
+        loginUsernameInput.focus();
+      });
+      cancelLoginBtn.addEventListener("click", () => {
+        loginModalBackdrop.classList.add("hidden");
+        loginUsernameInput.value = "";
+        loginPasswordInput.value = "";
+      });
       confirmLoginBtn.addEventListener("click", () => {
         const username = loginUsernameInput.value.trim();
         const password = loginPasswordInput.value;
@@ -1505,7 +2075,6 @@
             return;
           }
         } else {
-          // First time login or no password set yet: store what they enter (can be blank)
           profile = profile || { username, email: "", password: "" };
           profile.password = password || "";
           userProfiles[username] = profile;
@@ -1519,10 +2088,13 @@
           localStorage.setItem("orderpadCurrentUser", username);
         } catch {}
 
-        hideLoginModal();
+        loginModalBackdrop.classList.add("hidden");
+        loginUsernameInput.value = "";
+        loginPasswordInput.value = "";
         showSignedInState();
       });
 
+      // settings
       settingsBtn.addEventListener("click", () => {
         if (!currentUser) {
           alert("Sign in first to open settings.");
@@ -1580,7 +2152,6 @@
         alert("Settings saved on this device.");
       });
 
-      // Sign out from within Settings
       signOutBtn.addEventListener("click", () => {
         if (!currentUser) {
           closeSettingsModal();
@@ -1598,42 +2169,43 @@
         showSignedInState();
       });
 
-      // start new order -> go to customer list page
+      // start new order
       startOrderBtn.addEventListener("click", () => {
         if (!currentUser) {
-          showLoginModal();
+          loginModalBackdrop.classList.remove("hidden");
+          loginUsernameInput.focus();
           return;
         }
         startCard.classList.add("hidden");
         orderMain.classList.add("hidden");
         customerSelectPage.classList.remove("hidden");
         customerSearchInput.value = "";
-        renderCustomerList("");
+        renderCustomerList();
         customerSearchInput.focus();
       });
 
-      // change customer from order screen
+      // change customer
       if (changeCustomerBtn) {
         changeCustomerBtn.addEventListener("click", () => {
           if (!currentUser) {
-            showLoginModal();
+            loginModalBackdrop.classList.remove("hidden");
+            loginUsernameInput.focus();
             return;
           }
           orderMain.classList.add("hidden");
           addItemPage.classList.add("hidden");
           customerSelectPage.classList.remove("hidden");
           customerSearchInput.value = "";
-          renderCustomerList("");
+          renderCustomerList();
           customerSearchInput.focus();
         });
       }
 
-      // customer search typing
       customerSearchInput.addEventListener("input", () => {
-        renderCustomerList(customerSearchInput.value || "");
+        renderCustomerList();
       });
 
-      // go to add item page
+      // add item page
       addItemBtn.addEventListener("click", () => {
         if (!customerSelect.value) {
           alert("Select a customer first.");
@@ -1641,7 +2213,6 @@
         }
         orderMain.classList.add("hidden");
         addItemPage.classList.remove("hidden");
-        // select first category automatically if exists
         const firstCatBtn = categoryGrid.querySelector(".category-btn");
         if (firstCatBtn && !firstCatBtn.classList.contains("active")) {
           firstCatBtn.click();
@@ -1664,6 +2235,7 @@
           alert("Add at least one item to the order.");
           return;
         }
+        saveOrderToCustomerProfile();
         const poText = buildPoText();
         showPoModal(poText);
       });
@@ -1683,7 +2255,7 @@
         window.location.href = "mailto:sales@218supply.com?subject=" + subject + "&body=" + body;
       });
 
-      // Add new customer from list page
+      // Add new customer
       addCustomerFromListBtn.addEventListener("click", openCustomerModal);
       if (addCustomerBtn) {
         addCustomerBtn.addEventListener("click", openCustomerModal);
@@ -1705,7 +2277,6 @@
         const newCust = { id, name };
         window.customers.push(newCust);
 
-        // persist extra customers for this device
         const base = [];
         try {
           const existing = localStorage.getItem("orderpadExtraCustomers");
@@ -1717,17 +2288,155 @@
         base.push(newCust);
         saveExtraCustomers(base);
 
+        // Also save to shared database (fire-and-forget)
+        apiPost("/customers/upsert", {
+          id,
+          name,
+          city: "",
+          state: ""
+        });
+
         populateCustomers();
-        renderCustomerList(customerSearchInput.value || "");
+        renderCustomerList();
 
         customerSelect.value = id;
         customerModalBackdrop.classList.add("hidden");
         newCustomerNameInput.value = "";
         newCustomerIdInput.value = "";
 
-        // jump straight into the order for the new customer
         selectCustomerAndGoToOrder(id);
       });
+
+      // Edit customer
+      function openEditCustomerModal(customer) {
+        if (!customer) return;
+        editingCustomerObj = customer;
+        editCustomerNameInput.value = customer.name || "";
+        editCustomerIdInput.value = customer.id || "";
+        editCustomerCityInput.value = customer.city || "";
+        editCustomerStateInput.value = customer.state || "";
+        customerEditModalBackdrop.classList.remove("hidden");
+        editCustomerNameInput.focus();
+      }
+
+      function closeEditCustomerModal() {
+        editingCustomerObj = null;
+        customerEditModalBackdrop.classList.add("hidden");
+      }
+
+      if (editCustomerBtn) {
+        editCustomerBtn.addEventListener("click", () => {
+          const id = customerSelect.value;
+          if (!id) return;
+          const customer = (window.customers || []).find((c) => c.id === id);
+          if (customer) {
+            openEditCustomerModal(customer);
+          }
+        });
+      }
+
+      cancelEditCustomerBtn.addEventListener("click", (evt) => {
+        evt.preventDefault();
+        closeEditCustomerModal();
+      });
+
+      saveEditCustomerBtn.addEventListener("click", (evt) => {
+        evt.preventDefault();
+        if (!editingCustomerObj) {
+          closeEditCustomerModal();
+          return;
+        }
+        const newName  = editCustomerNameInput.value.trim();
+        const newId    = editCustomerIdInput.value.trim();
+        const newCity  = editCustomerCityInput.value.trim();
+        const newState = editCustomerStateInput.value.trim();
+
+        if (newName) editingCustomerObj.name = newName;
+        if (newId)   editingCustomerObj.id   = newId;
+        editingCustomerObj.city  = newCity;
+        editingCustomerObj.state = newState;
+
+        saveCustomerEditFor(editingCustomerObj.id, {
+          name: editingCustomerObj.name,
+          city: editingCustomerObj.city,
+          state: editingCustomerObj.state
+        });
+
+        // Sync to shared database
+        apiPost("/customers/upsert", {
+          id: editingCustomerObj.id,
+          name: editingCustomerObj.name,
+          city: editingCustomerObj.city || "",
+          state: editingCustomerObj.state || ""
+        });
+
+        populateCustomers();
+        const updatedCustomer = (window.customers || []).find((c) => c.id === customerSelect.value);
+        if (updatedCustomer) {
+          orderCustomerDisplay.textContent = updatedCustomer.name || "No customer selected";
+        }
+
+        closeEditCustomerModal();
+      });
+
+      // Customer profile
+      if (customerProfileBtn) {
+        customerProfileBtn.addEventListener("click", () => {
+          const id = customerSelect.value;
+          if (!id) {
+            alert("Select a customer first.");
+            return;
+          }
+          setCustomerProfileTab("info");
+          fillCustomerProfileModal(id);
+        });
+      }
+
+      closeCustomerProfileBtn.addEventListener("click", (evt) => {
+        evt.preventDefault();
+        closeCustomerProfileModal();
+      });
+
+      saveCustomerProfileBtn.addEventListener("click", (evt) => {
+        evt.preventDefault();
+        saveCustomerProfileFromModal();
+
+        if (currentProfileCustomerId) {
+          apiPost("/customer-profiles/upsert", {
+            customer_id: currentProfileCustomerId,
+            contact_name: profileContactNameInput.value.trim() || null,
+            phone: profilePhoneInput.value.trim() || null,
+            email: profileEmailInput.value.trim() || null,
+            notes: profileNotesInput.value.trim() || null,
+            tax_exempt: !!profileTaxExemptInput.checked,
+            billing_street: billingStreetInput.value.trim() || null,
+            billing_city: billingCityInput.value.trim() || null,
+            billing_state: billingStateInput.value.trim() || null,
+            billing_zip: billingZipInput.value.trim() || null
+          });
+        }
+
+        alert("Customer profile saved on this device.");
+      });
+
+
+      function setCustomerProfileTab(tab) {
+        if (!customerInfoTabBtn || !customerHistoryTabBtn) return;
+
+        const selectInfo = tab === "info";
+        customerInfoTabBtn.classList.toggle("active", selectInfo);
+        customerHistoryTabBtn.classList.toggle("active", !selectInfo);
+
+        if (customerInfoTabPanel && customerHistoryTabPanel) {
+          customerInfoTabPanel.classList.toggle("active", selectInfo);
+          customerHistoryTabPanel.classList.toggle("active", !selectInfo);
+        }
+      }
+
+      if (customerInfoTabBtn && customerHistoryTabBtn) {
+        customerInfoTabBtn.addEventListener("click", () => setCustomerProfileTab("info"));
+        customerHistoryTabBtn.addEventListener("click", () => setCustomerProfileTab("history"));
+      }
 
       // Add new product
       document.getElementById("addProductBtn").addEventListener("click", () => {
@@ -1755,7 +2464,6 @@
         const newProd = { sku, name, category, subcategory: "", packSize: pack, price };
         window.products.push(newProd);
 
-        // persist extra products for this device
         const base = [];
         try {
           const existing = localStorage.getItem("orderpadExtraProducts");
@@ -1766,6 +2474,15 @@
         } catch {}
         base.push(newProd);
         saveExtraProducts(base);
+
+        // Sync to shared database
+        apiPost("/products/upsert", {
+          sku,
+          name,
+          category,
+          packSize: pack,
+          price
+        });
 
         buildCategories();
         productModalBackdrop.classList.add("hidden");
