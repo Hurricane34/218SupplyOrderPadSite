@@ -751,7 +751,7 @@
           <input
             type="text"
             id="productSearchInput"
-            placeholder="Search by SKU or name..."
+            placeholder="Search items..."
           />
         </div>
       </div>
@@ -1375,6 +1375,16 @@ document.addEventListener("DOMContentLoaded", () => {
         "Seasonal / Specialty"
       ];
 
+      const SNACKS_SUBCATEGORIES = [
+        "Chips",
+        "Earls",
+        "Candy",
+        "Jerky",
+        "Nuts",
+        "Meat Sticks"
+      ];
+
+
       let currentMainCategory = null;
       let currentSubcategory = null;
 
@@ -1449,11 +1459,72 @@ document.addEventListener("DOMContentLoaded", () => {
 
       function getMainCategory(prod) {
         const cat = (prod.category || "").trim();
+        const nameU = (prod.name || "").toUpperCase();
+
+        // If something is labeled Bar & Restaurant but looks like a snack (chips, candy, jerky, meat sticks, nuts),
+        // treat it as Snacks & Candy so it shows up under the red Snacks & Candy buttons.
+        if (
+          cat === "Bar & Restaurant" &&
+          /(JERKY|MEAT STICK|SNACK STICK|MEAT SNACK|PEPPERONI|CHIPS|CANDY|NUTS?|PEANUT|ALMOND|CASHEW|SEEDS?)/.test(nameU)
+        ) {
+          return "Snacks & Candy";
+        }
+
         if (MAIN_CATEGORIES.includes(cat)) return cat;
         return inferMainCategoryFromLegacy(cat, prod.name || "");
       }
 
+      function getSnacksSubcategory(prod) {
+        const name = (prod.name || "").toUpperCase();
+        const cat  = (prod.category || "").toUpperCase();
+        const sub  = (prod.subcategory || "").toUpperCase();
+        const sku  = (prod.sku || "").toUpperCase();
+
+        // 1) Earls – brand-based, always its own bucket
+        if (/EARL'?S/.test(name) || sub.includes("EARL") || sku.startsWith("EARL")) {
+          return "Earls";
+        }
+
+        // 2) Jerky – all Kickass jerkies etc.
+        if (/JERKY/.test(name)) {
+          return "Jerky";
+        }
+
+        // 3) Meat Sticks – Old World + Kickass twin packs, snack sticks, pepperoni, etc.
+        if (/(MEAT STICK|SNACK STICK|MEAT SNACK|PEPPERONI|SAUSAGE STICK)/.test(name)) {
+          return "Meat Sticks";
+        }
+
+        // 4) Nuts – any nuts, trail mixes, or seeds
+        if (/(NUTS?|PEANUT|ALMOND|CASHEW|PISTACHIO|TRAIL MIX|SUNFLOWER SEEDS?)/.test(name)) {
+          return "Nuts";
+        }
+
+        // 5) Chips – all salty snacks that aren’t Earls
+        if (
+          cat === "CHIPS" ||
+          /(CHIP|DORITOS|CHEETOS|FRITOS|RUFFLES|PRETZEL|SNACK MIX|CORN NUTS?|POPCORN|PUFF)/.test(name)
+        ) {
+          return "Chips";
+        }
+
+        // 6) Candy – everything else sweet: candy bars, peg, boxed, gum, mints, etc.
+        if (
+          /(CANDY|GUM|MINT|CHOCOLATE|SNICKERS|TWIX|MARS|HERSHEY|REESE|M&M|SKITTLES|STARBURST|KIT KAT)/.test(name) ||
+          sub.includes("CANDY")
+        ) {
+          return "Candy";
+        }
+
+        // Fallback for anything we didn't match explicitly
+        return "Candy";
+      }
+
       function getSubcategory(prod) {
+        if (getMainCategory(prod) === "Snacks & Candy") {
+          return getSnacksSubcategory(prod);
+        }
+
         let sub = (prod.subcategory || "").trim();
         if (sub) {
           // Normalize case so "bar" and "Bar" collapse into one
@@ -1473,11 +1544,23 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       function getProductLabel(prod) {
-        const sku = (prod.sku || "").trim();
         let baseName = (prod.name || "").trim();
+        const legacyCat = (prod.category || "").toUpperCase().trim();
+
+        // For Snacks & Candy, never show the raw SKU in the label
+        if (getMainCategory(prod) === "Snacks & Candy") {
+          if (legacyCat === "MEAT SNACKS") {
+            const price = Number(prod.price || 0);
+            const brand = Math.abs(price - 18) < 0.01 ? "Old World Meats" : "Kickass";
+            if (brand && baseName) return brand + " " + baseName;
+            return baseName || brand || "";
+          }
+          return baseName;
+        }
+
+        const sku = (prod.sku || "").trim();
         let prefix = sku;
 
-        const legacyCat = (prod.category || "").toUpperCase().trim();
         if (legacyCat === "MEAT SNACKS") {
           const price = Number(prod.price || 0);
           const brand = Math.abs(price - 18) < 0.01 ? "Old World Meats" : "Kickass";
@@ -1537,6 +1620,38 @@ document.addEventListener("DOMContentLoaded", () => {
         subcategoryGrid.innerHTML = "";
         if (!currentMainCategory) return;
 
+        // For Snacks & Candy, always show the same 6 clean subcategories
+        if (currentMainCategory === "Snacks & Candy") {
+          const subs = SNACKS_SUBCATEGORIES;
+          if (!currentSubcategory || !subs.includes(currentSubcategory)) {
+            currentSubcategory = subs[0];
+          }
+
+          subs.forEach(sub => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "category-btn" + (sub === currentSubcategory ? " active" : "");
+            btn.textContent = sub;
+            btn.addEventListener("click", () => {
+              if (currentSubcategory === sub) {
+                currentSubcategory = null;
+                document
+                  .querySelectorAll("#subcategoryGrid .category-btn")
+                  .forEach(b => b.classList.remove("active"));
+              } else {
+                currentSubcategory = sub;
+                document
+                  .querySelectorAll("#subcategoryGrid .category-btn")
+                  .forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+              }
+              showProductsForCategory();
+            });
+            subcategoryGrid.appendChild(btn);
+          });
+          return;
+        }
+
         const subsSet = new Set();
         (window.products || []).forEach(p => {
           if (getMainCategory(p) === currentMainCategory) {
@@ -1583,7 +1698,11 @@ document.addEventListener("DOMContentLoaded", () => {
           p => getMainCategory(p) === currentMainCategory
         );
 
-        if (currentSubcategory) {
+        if (currentMainCategory === "Snacks & Candy") {
+          if (currentSubcategory) {
+            filtered = filtered.filter(p => getSnacksSubcategory(p) === currentSubcategory);
+          }
+        } else if (currentSubcategory) {
           filtered = filtered.filter(p => getSubcategory(p) === currentSubcategory);
         }
 
@@ -1618,9 +1737,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const metaEl = document.createElement("div");
             metaEl.className = "product-meta";
-            metaEl.textContent = `SKU ${prod.sku} • ${prod.packSize || ""} • ${formatMoney(
-              prod.price || 0
-            )}`;
+            const pack = prod.packSize || "";
+            const priceStr = formatMoney(prod.price || 0);
+            metaEl.textContent = pack ? `${pack} • ${priceStr}` : priceStr;
 
             main.appendChild(nameEl);
             main.appendChild(metaEl);
