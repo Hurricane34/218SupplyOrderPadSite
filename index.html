@@ -301,59 +301,43 @@
     }
 
     .product-row {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  padding: 10px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-.product-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-.product-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .product-main { flex: 1 1 auto; }
+    .product-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .product-meta {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    .product-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      min-width: 90px;
+    }
+    
+.product-controls input[type="number"] {
+  height: 28px;
+  min-width: 30px;
+  width: auto;
+  padding: 2px 6px;
   font-size: 0.8rem;
-  color: #6b7280;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
 }
-.qty-wrapper {
-  margin-top: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  align-self: flex-end;
-}
-.qty-input {
-      width: 52px;
-      height: 28px;
-      padding: 2px 4px;
-      font-size: 0.85rem;
-      text-align: center;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-    }
-.add-btn {
-      padding: 6px 14px;
-      font-size: 0.85rem;
-      border-radius: 999px;
-      background: var(--accent-main);
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
-.add-btn {
-      padding: 6px 14px;
-      font-size: 0.85rem;
-      border-radius: 999px;
-      background: var(--accent-main);
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
 
-/* CUSTOMER LIST PAGE */
+    /* CUSTOMER LIST PAGE */
     .customer-list {
       margin-top: 10px;
       max-height: 65vh;
@@ -767,7 +751,7 @@
           <input
             type="text"
             id="productSearchInput"
-            placeholder="Search items by name..."
+            placeholder="Search by SKU or name..."
           />
         </div>
       </div>
@@ -961,7 +945,13 @@
   <script src="data.js"></script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    
+function autoSizeQtyInput(input) {
+  const len = input.value.length || 1;
+  input.style.width = Math.max(28, len * 11) + "px";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
       const startCard              = document.getElementById("startCard");
       const startOrderBtn          = document.getElementById("startOrderBtn");
       const orderMain              = document.getElementById("orderMain");
@@ -1385,15 +1375,6 @@
         "Seasonal / Specialty"
       ];
 
-      const SNACK_SUBCATEGORIES = [
-        "Singles",
-        "Cases",
-        "Beverages",
-        "Jerky",
-        "Meat Sticks",
-        "Candy"
-      ];
-
       let currentMainCategory = null;
       let currentSubcategory = null;
 
@@ -1466,48 +1447,7 @@
         return "Kitchen Essentials";
       }
 
-      function getSnacksSubcategory(prod) {
-  const category = (prod.category || "").toUpperCase();
-  const name = (prod.name || "").toUpperCase();
-  const pack = (prod.packSize || "").toUpperCase();
-
-  const isBeverage =
-    category.includes("BEV") ||
-    category.includes("DRINK") ||
-    /(SODA|COLA|ROOT BEER|MTN DEW|PEPSI|COKE|DR PEPPER|SPRITE|GATORADE|POWERADE|ENERGY|COFFEE|TEA)/.test(name);
-
-  if (isBeverage) return "Beverages";
-
-  const isJerky =
-    category.includes("JERKY") ||
-    /JERKY/.test(name);
-
-  if (isJerky) return "Jerky";
-
-  const isMeatStick =
-    category.includes("MEAT") ||
-    /(MEAT STICK|MEAT SNACK|SAUSAGE STICK|PEPPERONI STICK)/.test(name);
-
-  if (isMeatStick) return "Meat Sticks";
-
-  const isCandy =
-    category.includes("CANDY") ||
-    /(CANDY|CHOCOLATE|GUM|MINT|M&M|SNICKERS|HERSHEY|REESE)/.test(name);
-
-  if (isCandy) return "Candy";
-
-  const isCase =
-    category.includes("CASE") ||
-    /CS/.test(pack) ||
-    pack.includes("CS") ||
-    pack.includes("CASE");
-
-  if (isCase) return "Cases";
-
-  return "Singles";
-}
-
-function getMainCategory(prod) {
+      function getMainCategory(prod) {
         const cat = (prod.category || "").trim();
         if (MAIN_CATEGORIES.includes(cat)) return cat;
         return inferMainCategoryFromLegacy(cat, prod.name || "");
@@ -1533,19 +1473,21 @@ function getMainCategory(prod) {
       }
 
       function getProductLabel(prod) {
-  let baseName = (prod.name || "").trim();
-  let prefix = "";
+        const sku = (prod.sku || "").trim();
+        let baseName = (prod.name || "").trim();
+        let prefix = sku;
 
-  const legacyCat = (prod.category || "").toUpperCase().trim();
-  if (legacyCat === "MEAT SNACKS") {
-    const price = Number(prod.price || 0);
-    const brand = Math.abs(price - 18) < 0.01 ? "Old World Meats" : "Kickass";
-    prefix = brand;
-  }
+        const legacyCat = (prod.category || "").toUpperCase().trim();
+        if (legacyCat === "MEAT SNACKS") {
+          const price = Number(prod.price || 0);
+          const brand = Math.abs(price - 18) < 0.01 ? "Old World Meats" : "Kickass";
+          prefix = brand;
+        }
 
-  if (prefix && baseName) return prefix + " " + baseName;
-  return baseName;
-}
+        if (prefix && baseName) return prefix + " " + baseName;
+        if (prefix) return prefix;
+        return baseName;
+      }
 
       function buildCategories() {
         categoryGrid.innerHTML = "";
@@ -1592,158 +1534,132 @@ function getMainCategory(prod) {
       }
 
       function buildSubcategories() {
-  subcategoryGrid.innerHTML = "";
-  if (!currentMainCategory) return;
+        subcategoryGrid.innerHTML = "";
+        if (!currentMainCategory) return;
 
-  // Custom fixed subcategories for Snacks & Candy
-  if (currentMainCategory === "Snacks & Candy") {
-    const subs = SNACK_SUBCATEGORIES.slice();
-    if (!currentSubcategory || !subs.includes(currentSubcategory)) {
-      currentSubcategory = null;
-    }
-    subs.forEach(sub => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "category-btn" + (sub === currentSubcategory ? " active" : "");
-      btn.textContent = sub;
-      btn.addEventListener("click", () => {
-        if (currentSubcategory === sub) {
+        const subsSet = new Set();
+        (window.products || []).forEach(p => {
+          if (getMainCategory(p) === currentMainCategory) {
+            subsSet.add(getSubcategory(p));
+          }
+        });
+
+        const subs = Array.from(subsSet).sort((a, b) => a.localeCompare(b));
+        if (!subs.length) return;
+
+        if (!currentSubcategory || !subs.includes(currentSubcategory)) {
           currentSubcategory = null;
-          document
-            .querySelectorAll("#subcategoryGrid .category-btn")
-            .forEach(b => b.classList.remove("active"));
-        } else {
-          currentSubcategory = sub;
-          document
-            .querySelectorAll("#subcategoryGrid .category-btn")
-            .forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
         }
-        showProductsForCategory();
-      });
-      subcategoryGrid.appendChild(btn);
-    });
-    return;
-  }
 
-  const subsSet = new Set();
-  (window.products || []).forEach(p => {
-    if (getMainCategory(p) === currentMainCategory) {
-      subsSet.add(getSubcategory(p));
-    }
-  });
-
-  const subs = Array.from(subsSet).sort((a, b) => a.localeCompare(b));
-  if (!subs.length) return;
-
-  if (!currentSubcategory || !subs.includes(currentSubcategory)) {
-    currentSubcategory = null;
-  }
-
-  subs.forEach(sub => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "category-btn" + (sub === currentSubcategory ? " active" : "");
-    btn.textContent = sub;
-    btn.addEventListener("click", () => {
-      if (currentSubcategory === sub) {
-        currentSubcategory = null;
-        document
-          .querySelectorAll("#subcategoryGrid .category-btn")
-          .forEach(b => b.classList.remove("active"));
-      } else {
-        currentSubcategory = sub;
-        document
-          .querySelectorAll("#subcategoryGrid .category-btn")
-          .forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
+        subs.forEach(sub => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "category-btn" + (sub === currentSubcategory ? " active" : "");
+          btn.textContent = sub;
+          btn.addEventListener("click", () => {
+            if (currentSubcategory === sub) {
+              currentSubcategory = null;
+              document
+                .querySelectorAll("#subcategoryGrid .category-btn")
+                .forEach(b => b.classList.remove("active"));
+            } else {
+              currentSubcategory = sub;
+              document
+                .querySelectorAll("#subcategoryGrid .category-btn")
+                .forEach(b => b.classList.remove("active"));
+              btn.classList.add("active");
+            }
+            showProductsForCategory();
+          });
+          subcategoryGrid.appendChild(btn);
+        });
       }
-      showProductsForCategory();
-    });
-    subcategoryGrid.appendChild(btn);
-  });
-}
 
       function showProductsForCategory() {
-  productList.innerHTML = "";
-  const term = (productSearchInput && productSearchInput.value || "").trim().toLowerCase();
+        productList.innerHTML = "";
+        const term = (productSearchInput && productSearchInput.value || "").trim().toLowerCase();
 
-  let filtered = (window.products || []).filter(
-    p => getMainCategory(p) === currentMainCategory
-  );
+        let filtered = (window.products || []).filter(
+          p => getMainCategory(p) === currentMainCategory
+        );
 
-  if (currentSubcategory) {
-    if (currentMainCategory === "Snacks & Candy") {
-      filtered = filtered.filter(p => getSnacksSubcategory(p) === currentSubcategory);
-    } else {
-      filtered = filtered.filter(p => getSubcategory(p) === currentSubcategory);
-    }
+        if (currentSubcategory) {
+          filtered = filtered.filter(p => getSubcategory(p) === currentSubcategory);
+        }
+
+        if (term) {
+          filtered = filtered.filter(p => {
+            const label = getProductLabel(p).toLowerCase();
+            const meta = (p.packSize || "").toLowerCase();
+            return label.includes(term) || meta.includes(term);
+          });
+        }
+
+        if (!filtered.length) {
+          const p = document.createElement("p");
+          p.className = "muted";
+          p.textContent = "No products match this selection yet.";
+          productList.appendChild(p);
+          return;
+        }
+
+        filtered
+          .sort((a, b) => getProductLabel(a).localeCompare(getProductLabel(b)))
+          .forEach(prod => {
+            const row = document.createElement("div");
+            row.className = "product-row";
+
+            const main = document.createElement("div");
+            main.className = "product-main";
+
+            const nameEl = document.createElement("div");
+            nameEl.className = "product-name";
+            nameEl.textContent = getProductLabel(prod);
+
+            const metaEl = document.createElement("div");
+            metaEl.className = "product-meta";
+            metaEl.textContent = `SKU ${prod.sku} • ${prod.packSize || ""} • ${formatMoney(
+              prod.price || 0
+            )}`;
+
+            main.appendChild(nameEl);
+            main.appendChild(metaEl);
+
+            const controls = document.createElement("div");
+            controls.className = "product-controls";
+
+            
+const qtyInput = document.createElement("input");
+qtyInput.type = "number";
+qtyInput.min = "1";
+qtyInput.step = "1";
+qtyInput.value = "1";
+autoSizeQtyInput(qtyInput);
+
+qtyInput.addEventListener("input", () => {
+  if (qtyInput.value === "" || Number(qtyInput.value) < 1) {
+    qtyInput.value = "1";
   }
+  autoSizeQtyInput(qtyInput);
+});
 
-  if (term) {
-    filtered = filtered.filter(p => {
-      const label = getProductLabel(p).toLowerCase();
-      const meta = (p.packSize || "").toLowerCase();
-      return label.includes(term) || meta.includes(term);
-    });
-  }
+const addBtn = document.createElement("button");
+addBtn.textContent = "Add";
+            addBtn.className = "btn-sm btn-primary";
+            addBtn.addEventListener("click", () => {
+              const qty = parseInt(qtyInput.value, 10) || 1;
+              addToCart(prod, qty);
+            });
 
-  if (!filtered.length) {
-    const empty = document.createElement("p");
-    empty.textContent = "No products match this filter.";
-    empty.style.padding = "0.75rem 0";
-    productList.appendChild(empty);
-    return;
-  }
+            controls.appendChild(qtyInput);
+            controls.appendChild(addBtn);
 
-  filtered.forEach(prod => {
-    const card = document.createElement("div");
-    card.className = "product-row";
+            row.appendChild(main);
+            row.appendChild(controls);
 
-    const labelEl = document.createElement("div");
-    labelEl.className = "product-label";
-    labelEl.textContent = getProductLabel(prod);
-
-    const metaEl = document.createElement("div");
-    metaEl.className = "product-meta";
-    metaEl.textContent = `${prod.packSize || ""} • ${formatMoney(prod.price || 0)}`;
-
-    const qtyWrapper = document.createElement("div");
-    qtyWrapper.className = "qty-wrapper";
-
-    const qtyInput = document.createElement("input");
-    qtyInput.type = "number";
-    qtyInput.min = "1";
-    qtyInput.inputMode = "numeric";
-    qtyInput.pattern = "[0-9]*";
-    qtyInput.className = "qty-input";
-
-    const addBtn = document.createElement("button");
-    addBtn.type = "button";
-    addBtn.className = "add-btn";
-    addBtn.textContent = "Add";
-
-    addBtn.addEventListener("click", () => {
-      const qty = parseInt(qtyInput.value, 10);
-      if (!qty || qty <= 0 || !Number.isFinite(qty)) {
-        alert("Enter a valid quantity to add.");
-        qtyInput.focus();
-        return;
+            productList.appendChild(row);
+          });
       }
-      addItemToOrder(prod, qty);
-      qtyInput.value = "";
-    });
-
-    qtyWrapper.appendChild(qtyInput);
-    qtyWrapper.appendChild(addBtn);
-
-    card.appendChild(labelEl);
-    card.appendChild(metaEl);
-    card.appendChild(qtyWrapper);
-
-    productList.appendChild(card);
-  });
-}
 
       function addToCart(prod, qty) {
         if (!prod) return;
@@ -1806,7 +1722,7 @@ function renderCart() {
           const tdLine = document.createElement("td");
           const tdRemove = document.createElement("td");
 
-          tdProd.textContent = item.name;
+          tdProd.textContent = `${item.sku} – ${item.name}`;
           tdQty.textContent = item.qty;
           tdQty.className = "text-right";
           tdPrice.textContent = formatMoney(item.price);
@@ -2552,53 +2468,13 @@ function renderCart() {
         doc.save(filename);
       });
 
-      
-emailPoBtn.addEventListener("click", () => {
-  const result = createPdfDoc();
-  if (!result) return;
+      emailPoBtn.addEventListener("click", () => {
+        const subject = encodeURIComponent("New Purchase Order from 218 Supply Order Pad");
+        const body = encodeURIComponent(lastPoText || buildPoText());
+        window.location.href = "mailto:sales@218supply.com?subject=" + subject + "&body=" + body;
+      });
 
-  const { doc, filename } = result;
-
-  // PDF → base64
-  const dataUri = doc.output("datauristring");
-  const base64 = dataUri.split(",")[1] || "";
-
-  const poText = lastPoText || buildPoText();
-
-  const customerId = customerSelect.value || "";
-  const customerObj = (window.customers || []).find(c => c.id === customerId);
-  const customerName = customerObj && customerObj.name ? customerObj.name : "";
-
-  fetch("/api/send-po", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      filename,
-      pdfBase64: base64,
-      poText,
-      customerId,
-      customerName
-    })
-  })
-    .then(res => {
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return res.json().catch(() => ({}));
-    })
-    .then(data => {
-      if (data && data.success === false) {
-        throw new Error(data.message || "Send failed");
-      }
-      alert("Purchase order emailed to sales@218supply.com.");
-    })
-    .catch(err => {
-      console.error("Email send failed, falling back to mailto:", err);
-      const subject = encodeURIComponent("New Purchase Order from 218 Supply Order Pad");
-      const body = encodeURIComponent(poText);
-      window.location.href =
-        "mailto:sales@218supply.com?subject=" + subject + "&body=" + body;
-    });
-});
-// Add new customer
+      // Add new customer
       addCustomerFromListBtn.addEventListener("click", openCustomerModal);
       if (addCustomerBtn) {
         addCustomerBtn.addEventListener("click", openCustomerModal);
