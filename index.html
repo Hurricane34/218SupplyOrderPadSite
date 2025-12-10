@@ -84,6 +84,19 @@
       font-size: 0.9rem;
       cursor: pointer;
     }
+    .header-cart-btn {
+      margin-left: 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.95);
+      background: rgba(0,0,0,0.18);
+      color: #fff;
+      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
     .header-signin-btn {
       padding: 6px 14px;
       border-radius: 999px;
@@ -226,6 +239,17 @@
       border-radius: 999px;
     }
 
+    .product-controls .btn-primary {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
     .muted {
       color: #6b7280;
       font-size: 0.8rem;
@@ -320,10 +344,11 @@
     }
     .product-controls {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 4px;
-      min-width: 90px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      min-width: 110px;
     }
     
 .product-controls input[type="number"] {
@@ -641,6 +666,7 @@
       <button id="signInBtn" class="header-signin-btn">Sign In</button>
       <span id="signedInLabel" class="signed-in-label" style="display:none;"></span>
     </div>
+    <button id="cartHeaderBtn" class="header-cart-btn" type="button">🛒 (0)</button>
     <button id="settingsBtn" class="header-settings-btn" aria-label="Settings">⚙</button>
   </header>
 
@@ -751,7 +777,7 @@
           <input
             type="text"
             id="productSearchInput"
-            placeholder="Search items..."
+            placeholder="Search by SKU or name..."
           />
         </div>
       </div>
@@ -991,6 +1017,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const settingsBtn              = document.getElementById("settingsBtn");
       const settingsModalBackdrop    = document.getElementById("settingsModalBackdrop");
+      
+      if (cartHeaderBtn) {
+        cartHeaderBtn.addEventListener("click", () => {
+          // Show main order view and scroll to cart
+          orderMain.classList.remove("hidden");
+          addItemPage.classList.add("hidden");
+          const cartBox = document.getElementById("cartContainer");
+          if (cartBox) {
+            cartBox.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      }
       const settingsUsernameInput    = document.getElementById("settingsUsername");
       const settingsEmailInput       = document.getElementById("settingsEmail");
       const settingsCurrentPassword  = document.getElementById("settingsCurrentPassword");
@@ -1384,7 +1422,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "Meat Sticks"
       ];
 
-
       let currentMainCategory = null;
       let currentSubcategory = null;
 
@@ -1459,17 +1496,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       function getMainCategory(prod) {
         const cat = (prod.category || "").trim();
-        const nameU = (prod.name || "").toUpperCase();
-
-        // If something is labeled Bar & Restaurant but looks like a snack (chips, candy, jerky, meat sticks, nuts),
-        // treat it as Snacks & Candy so it shows up under the red Snacks & Candy buttons.
-        if (
-          cat === "Bar & Restaurant" &&
-          /(JERKY|MEAT STICK|SNACK STICK|MEAT SNACK|PEPPERONI|CHIPS|CANDY|NUTS?|PEANUT|ALMOND|CASHEW|SEEDS?)/.test(nameU)
-        ) {
-          return "Snacks & Candy";
-        }
-
         if (MAIN_CATEGORIES.includes(cat)) return cat;
         return inferMainCategoryFromLegacy(cat, prod.name || "");
       }
@@ -1479,36 +1505,42 @@ document.addEventListener("DOMContentLoaded", () => {
         const cat  = (prod.category || "").toUpperCase();
         const sub  = (prod.subcategory || "").toUpperCase();
         const sku  = (prod.sku || "").toUpperCase();
+        const price = Number(prod.price || 0);
 
-        // 1) Earls – brand-based, always its own bucket
-        if (/EARL'?S/.test(name) || sub.includes("EARL") || sku.startsWith("EARL")) {
+        // 1) $1 rule: any $1.00 Snacks & Candy item goes to Chips
+        if (Math.abs(price - 1.0) < 0.0001) {
+          return "Chips";
+        }
+
+        // 2) Earls – brand-based
+        if (/EARL'?S/.test(name) || sub.includes("EARL") || sku.startsWith("CHP-EAR-")) {
           return "Earls";
         }
 
-        // 2) Jerky – all Kickass jerkies etc.
+        // 3) Jerky
         if (/JERKY/.test(name)) {
           return "Jerky";
         }
 
-        // 3) Meat Sticks – Old World + Kickass twin packs, snack sticks, pepperoni, etc.
-        if (/(MEAT STICK|SNACK STICK|MEAT SNACK|PEPPERONI|SAUSAGE STICK)/.test(name)) {
+        // 4) Meat Sticks – Old World + Kickass sticks, pepperoni, etc.
+        if (/(MEAT STICK|SNACK STICK|MEAT SNACK|SAUSAGE STICK|PEPPERONI)/.test(name)) {
           return "Meat Sticks";
         }
 
-        // 4) Nuts – any nuts, trail mixes, or seeds
-        if (/(NUTS?|PEANUT|ALMOND|CASHEW|PISTACHIO|TRAIL MIX|SUNFLOWER SEEDS?)/.test(name)) {
+        // 5) Nuts – nuts, mixes, seeds
+        if (/(NUTS?\b|PEANUT|ALMOND|CASHEW|PISTACHIO|TRAIL MIX|SUNFLOWER SEEDS?)/.test(name)) {
           return "Nuts";
         }
 
-        // 5) Chips – all salty snacks that aren’t Earls
+        // 6) Chips – salty snacks not already classified
         if (
           cat === "CHIPS" ||
-          /(CHIP|DORITOS|CHEETOS|FRITOS|RUFFLES|PRETZEL|SNACK MIX|CORN NUTS?|POPCORN|PUFF)/.test(name)
+          /(CHIP\b|DORITOS|CHEETOS|FRITOS|RUFFLES|PRETZEL|SNACK MIX|CORN NUTS?)/.test(name)
         ) {
           return "Chips";
         }
 
-        // 6) Candy – everything else sweet: candy bars, peg, boxed, gum, mints, etc.
+        // 7) Candy – everything else sweet
         if (
           /(CANDY|GUM|MINT|CHOCOLATE|SNICKERS|TWIX|MARS|HERSHEY|REESE|M&M|SKITTLES|STARBURST|KIT KAT)/.test(name) ||
           sub.includes("CANDY")
@@ -1516,15 +1548,11 @@ document.addEventListener("DOMContentLoaded", () => {
           return "Candy";
         }
 
-        // Fallback for anything we didn't match explicitly
+        // Fallback – default to Candy for any leftover sweets
         return "Candy";
       }
 
-      function getSubcategory(prod) {
-        if (getMainCategory(prod) === "Snacks & Candy") {
-          return getSnacksSubcategory(prod);
-        }
-
+function getSubcategory(prod) {
         let sub = (prod.subcategory || "").trim();
         if (sub) {
           // Normalize case so "bar" and "Bar" collapse into one
@@ -1544,23 +1572,21 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       function getProductLabel(prod) {
+        const sku = (prod.sku || "").trim();
         let baseName = (prod.name || "").trim();
         const legacyCat = (prod.category || "").toUpperCase().trim();
 
-        // For Snacks & Candy, never show the raw SKU in the label
+        // For Snacks & Candy, never show raw SKU as part of the label
         if (getMainCategory(prod) === "Snacks & Candy") {
           if (legacyCat === "MEAT SNACKS") {
             const price = Number(prod.price || 0);
             const brand = Math.abs(price - 18) < 0.01 ? "Old World Meats" : "Kickass";
             if (brand && baseName) return brand + " " + baseName;
-            return baseName || brand || "";
           }
           return baseName;
         }
 
-        const sku = (prod.sku || "").trim();
         let prefix = sku;
-
         if (legacyCat === "MEAT SNACKS") {
           const price = Number(prod.price || 0);
           const brand = Math.abs(price - 18) < 0.01 ? "Old World Meats" : "Kickass";
@@ -1624,7 +1650,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (currentMainCategory === "Snacks & Candy") {
           const subs = SNACKS_SUBCATEGORIES;
           if (!currentSubcategory || !subs.includes(currentSubcategory)) {
-            currentSubcategory = subs[0];
+            currentSubcategory = null;
           }
 
           subs.forEach(sub => {
@@ -1690,7 +1716,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      function showProductsForCategory() {
+function showProductsForCategory() {
         productList.innerHTML = "";
         const term = (productSearchInput && productSearchInput.value || "").trim().toLowerCase();
 
@@ -1737,9 +1763,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const metaEl = document.createElement("div");
             metaEl.className = "product-meta";
-            const pack = prod.packSize || "";
-            const priceStr = formatMoney(prod.price || 0);
-            metaEl.textContent = pack ? `${pack} • ${priceStr}` : priceStr;
+            if (getMainCategory(prod) === "Snacks & Candy") {
+              const pack = prod.packSize || "";
+              const priceStr = formatMoney(prod.price || 0);
+              metaEl.textContent = pack ? `${pack} • ${priceStr}` : priceStr;
+            } else {
+              metaEl.textContent = `SKU ${prod.sku} • ${prod.packSize || ""} • ${formatMoney(
+                prod.price || 0
+              )}`;
+            }
 
             main.appendChild(nameEl);
             main.appendChild(metaEl);
@@ -1819,6 +1851,11 @@ function renderCart() {
         const cartEmptyMsg = document.getElementById("cartEmptyMsg");
         const orderTotalCell = document.getElementById("orderTotalCell");
         const generateSection = document.getElementById("generateSection");
+
+        const totalUnits = cartItems.reduce((sum, item) => sum + (item.qty || 0), 0);
+        if (typeof cartHeaderBtn !== "undefined" && cartHeaderBtn) {
+          cartHeaderBtn.textContent = `🛒 (${totalUnits})`;
+        }
 
         cartTableBody.innerHTML = "";
 
