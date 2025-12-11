@@ -281,65 +281,126 @@
       margin-bottom: 10px;
     }
 
-    /* CATEGORY GRID – tappable pills */
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    /* CATEGORY ACCORDION – stacked cards like catalog */
+    #addItemPage .category-grid {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
-      margin-bottom: 12px;
-    }
-    .subcategory-grid {
-      margin-top: 4px;
       margin-bottom: 8px;
     }
-    .subcategory-grid .category-btn {
-      background: var(--header-start);
-      border-radius: 999px;
-      border: 1px solid var(--header-start);
-      font-size: 0.8rem;
-      padding: 6px 10px;
-      color: #ffffff;
-      opacity: 0.98;
-    }
-    .subcategory-grid .category-btn.active {
-      background: #b33434;
-      border-color: #b33434;
-      color: #ffffff;
-    }
-    .category-btn {
-      border-radius: 999px;
-      border: 1px solid var(--header-end);
-      padding: 10px 14px;
-      font-size: 0.85rem;
-      background: var(--header-end);
-      color: #ffffff;
-      cursor: pointer;
-      text-align: center;
-      line-height: 1.3;
-      word-break: break-word;
-    }
-    .category-btn.active {
-      background: var(--accent-alt);
-      border-color: var(--accent-alt);
-      color: #fff;
+
+    .accordion-card {
+      background: radial-gradient(circle at top left, #111827, #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(75, 85, 99, 0.95);
+      padding: 10px 12px 8px;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.95);
     }
 
-    .product-row {
+    .accordion-header {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      border: none;
+      color: #e5e7eb;
+      padding: 4px 2px;
+      cursor: pointer;
+    }
+
+    .accordion-header-main {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .accordion-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .accordion-meta {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .accordion-chevron {
+      font-size: 0.9rem;
+      margin-left: 8px;
+      transition: transform 0.2s ease;
+    }
+
+    .accordion-card.open .accordion-chevron {
+      transform: rotate(180deg);
+    }
+
+    .accordion-body {
+      margin-top: 6px;
+      border-top: 1px solid rgba(55, 65, 81, 0.9);
+      padding-top: 6px;
+      display: none;
+      border-radius: 0.9rem;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(17,24,39,0.98));
+      border: 1px solid rgba(31,41,55,0.95);
+      padding: 8px 10px 10px;
+    }
+
+    .accordion-card.open .accordion-body {
+      display: block;
+    }
+
+    /* Subcategory chips – thin pill row like catalog */
+    .subcategory-grid {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.45rem;
+      margin-top: 2px;
+      align-items: center;
+    }
+
+    .subcat-chip {
+      border-radius: 999px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      border: 1px solid rgba(55,65,81,0.9);
+      background: linear-gradient(135deg, rgba(122,27,27,0.7), rgba(31,77,50,0.7));
+      color: #f3f4f6;
+      cursor: pointer;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .subcat-chip.active {
+      background: linear-gradient(135deg, var(--header-start), var(--header-end));
+      border-color: rgba(248,250,252,0.95);
+      color: #f9fafb;
+      font-weight: 600;
+      box-shadow: 0 0 0 1px rgba(248,250,252,0.2);
+    }
+
+
+.product-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
       padding: 8px 0;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid rgba(31,41,55,0.85);
     }
-    .product-main { flex: 1 1 auto; }
+    .product-main { 
+      flex: 1 1 auto; 
+    }
     .product-name {
       font-size: 0.9rem;
       font-weight: 500;
+      color: #e5e7eb;
     }
     .product-meta {
       font-size: 0.8rem;
-      color: #6b7280;
+      color: #9ca3af;
       margin-top: 2px;
     }
     .product-controls {
@@ -359,8 +420,17 @@
   font-size: 0.8rem;
   text-align: center;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
+  border: 1px solid rgba(148,163,184,0.9);
+  background: rgba(15,23,42,0.98);
+  color: #e5e7eb;
 }
+
+    .product-controls .btn-primary {
+      min-width: 88px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
 
     /* CUSTOMER LIST PAGE */
     .customer-list {
@@ -769,8 +839,6 @@
         </div>
       </div>
       <p class="muted">Pick a main category, then a subcategory, then choose a product and quantity.</p>
-      <div id="categoryGrid" class="category-grid"></div>
-      <div id="subcategoryGrid" class="category-grid subcategory-grid"></div>
       <div class="row" style="margin-bottom:8px;">
         <div style="flex:1 1 100%;">
           <label for="productSearchInput" class="field-label">Search items</label>
@@ -781,6 +849,8 @@
           />
         </div>
       </div>
+      <div id="categoryGrid" class="category-grid"></div>
+      <div id="subcategoryGrid" class="subcategory-grid"></div>
       <div id="productList"></div>
     </div>
   </main>
@@ -1001,6 +1071,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const subcategoryGrid        = document.getElementById("subcategoryGrid");
       const productSearchInput     = document.getElementById("productSearchInput");
       const productList            = document.getElementById("productList");
+      const productSearchRow       = productSearchInput ? productSearchInput.closest(".row") : null;
       const cartEmptyMsg           = document.getElementById("cartEmptyMsg");
       const cartContainer          = document.getElementById("cartContainer");
       const cartTableBody          = document.querySelector("#cartTable tbody");
@@ -1090,6 +1161,31 @@ document.addEventListener("DOMContentLoaded", () => {
       let currentUserProfile = null;
       let userProfiles = {};
       let cartItems = [];
+
+      function addToCart(prod, qty) {
+        if (!prod) return;
+        const quantity = Math.max(1, parseInt(qty, 10) || 1);
+        const sku = (prod.sku || "").trim();
+        const name = getProductLabel(prod);
+        const packSize = prod.packSize || "";
+        const price = Number(prod.price || 0);
+
+        // If already in cart, bump quantity; otherwise add new line
+        const existingIndex = cartItems.findIndex(item => item.sku === sku);
+        if (existingIndex >= 0) {
+          cartItems[existingIndex].qty += quantity;
+        } else {
+          cartItems.push({
+            sku,
+            name,
+            packSize,
+            price,
+            qty: quantity
+          });
+        }
+
+        renderCart();
+      }
       let customerProfiles = {};
       let editingCustomerObj = null;
       let currentProfileCustomerId = null;
@@ -1424,6 +1520,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let currentMainCategory = null;
       let currentSubcategory = null;
+      let openCategoryCard = null;
 
       function inferMainCategoryFromLegacy(category, name) {
         const c = (category || "").toUpperCase().trim();
@@ -1496,8 +1593,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       function getMainCategory(prod) {
         const cat = (prod.category || "").trim();
-        if (MAIN_CATEGORIES.includes(cat)) return cat;
-        return inferMainCategoryFromLegacy(cat, prod.name || "");
+        return cat || "Other";
       }
 
       function getSnacksSubcategory(prod) {
@@ -1553,22 +1649,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 function getSubcategory(prod) {
-        let sub = (prod.subcategory || "").trim();
-        if (sub) {
-          // Normalize case so "bar" and "Bar" collapse into one
-          sub = sub
-            .split(" ")
-            .filter(Boolean)
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-            .join(" ");
-          return sub;
-        }
-
-        const legacy = (prod.category || "").trim();
-        if (legacy && !MAIN_CATEGORIES.includes(legacy)) {
-          return legacy;
-        }
-        return "Other";
+        const sub = (prod.subcategory || "").trim();
+        return sub || "Other";
       }
 
       function getProductLabel(prod) {
@@ -1602,9 +1684,16 @@ function getSubcategory(prod) {
         categoryGrid.innerHTML = "";
         subcategoryGrid.innerHTML = "";
 
+        if (productSearchRow) {
+          productSearchRow.style.display = "";
+        }
+
         const catSet = new Set();
+        const countsByCat = {};
         (window.products || []).forEach(p => {
-          catSet.add(getMainCategory(p));
+          const cat = getMainCategory(p);
+          catSet.add(cat);
+          countsByCat[cat] = (countsByCat[cat] || 0) + 1;
         });
 
         const cats = MAIN_CATEGORIES.filter(c => catSet.has(c));
@@ -1621,62 +1710,94 @@ function getSubcategory(prod) {
         }
 
         cats.forEach(cat => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "category-btn" + (cat === currentMainCategory ? " active" : "");
-          btn.textContent = cat;
-          btn.addEventListener("click", () => {
+          const card = document.createElement("div");
+          card.className = "accordion-card";
+          card.dataset.category = cat;
+
+          const header = document.createElement("button");
+          header.type = "button";
+          header.className = "accordion-header";
+
+          const headerMain = document.createElement("div");
+          headerMain.className = "accordion-header-main";
+
+          const titleEl = document.createElement("div");
+          titleEl.className = "accordion-title";
+          titleEl.textContent = cat;
+
+          const metaEl = document.createElement("div");
+          metaEl.className = "accordion-meta";
+          const count = countsByCat[cat] || 0;
+          metaEl.textContent = count
+            ? `${count} item${count === 1 ? "" : "s"} · Tap to view`
+            : "Tap to view";
+
+          headerMain.appendChild(titleEl);
+          headerMain.appendChild(metaEl);
+
+          const chev = document.createElement("span");
+          chev.className = "accordion-chevron";
+          chev.textContent = "▾";
+
+          header.appendChild(headerMain);
+          header.appendChild(chev);
+
+          const body = document.createElement("div");
+          body.className = "accordion-body";
+          body.dataset.categoryBody = cat;
+
+          header.addEventListener("click", () => {
+            // collapse if clicking the already open card
+            if (openCategoryCard === card) {
+              card.classList.remove("open");
+              openCategoryCard = null;
+              currentMainCategory = null;
+              currentSubcategory = null;
+              subcategoryGrid.innerHTML = "";
+              if (productList) productList.innerHTML = "";
+              return;
+            }
+
             currentMainCategory = cat;
             currentSubcategory = null;
+
             document
-              .querySelectorAll("#categoryGrid .category-btn")
-              .forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
+              .querySelectorAll("#categoryGrid .accordion-card")
+              .forEach(c => c.classList.remove("open"));
+
+            card.classList.add("open");
+            openCategoryCard = card;
+
+            // Move subcategory chips and product list into this card body
+            if (subcategoryGrid && !body.contains(subcategoryGrid)) {
+              body.appendChild(subcategoryGrid);
+            }
+            if (productList && !body.contains(productList)) {
+              body.appendChild(productList);
+            }
+
             buildSubcategories();
             showProductsForCategory();
           });
-          categoryGrid.appendChild(btn);
+
+          card.appendChild(header);
+          card.appendChild(body);
+          categoryGrid.appendChild(card);
         });
 
-        buildSubcategories();
-        showProductsForCategory();
+        // Open the current or first category by default
+        const initialCard =
+          categoryGrid.querySelector('.accordion-card[data-category="' + currentMainCategory + '"]') ||
+          categoryGrid.querySelector(".accordion-card");
+        if (initialCard) {
+          const headerBtn = initialCard.querySelector(".accordion-header");
+          if (headerBtn) headerBtn.click();
+        }
       }
 
-      function buildSubcategories() {
+function buildSubcategories() {
         subcategoryGrid.innerHTML = "";
         if (!currentMainCategory) return;
-
-        // For Snacks & Candy, always show the same 6 clean subcategories
-        if (currentMainCategory === "Snacks & Candy") {
-          const subs = SNACKS_SUBCATEGORIES;
-          if (!currentSubcategory || !subs.includes(currentSubcategory)) {
-            currentSubcategory = null;
-          }
-
-          subs.forEach(sub => {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "category-btn" + (sub === currentSubcategory ? " active" : "");
-            btn.textContent = sub;
-            btn.addEventListener("click", () => {
-              if (currentSubcategory === sub) {
-                currentSubcategory = null;
-                document
-                  .querySelectorAll("#subcategoryGrid .category-btn")
-                  .forEach(b => b.classList.remove("active"));
-              } else {
-                currentSubcategory = sub;
-                document
-                  .querySelectorAll("#subcategoryGrid .category-btn")
-                  .forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-              }
-              showProductsForCategory();
-            });
-            subcategoryGrid.appendChild(btn);
-          });
-          return;
-        }
 
         const subsSet = new Set();
         (window.products || []).forEach(p => {
@@ -1695,18 +1816,18 @@ function getSubcategory(prod) {
         subs.forEach(sub => {
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "category-btn" + (sub === currentSubcategory ? " active" : "");
+          btn.className = "subcat-chip" + (sub === currentSubcategory ? " active" : "");
           btn.textContent = sub;
           btn.addEventListener("click", () => {
             if (currentSubcategory === sub) {
               currentSubcategory = null;
               document
-                .querySelectorAll("#subcategoryGrid .category-btn")
+                .querySelectorAll("#subcategoryGrid .subcat-chip")
                 .forEach(b => b.classList.remove("active"));
             } else {
               currentSubcategory = sub;
               document
-                .querySelectorAll("#subcategoryGrid .category-btn")
+                .querySelectorAll("#subcategoryGrid .subcat-chip")
                 .forEach(b => b.classList.remove("active"));
               btn.classList.add("active");
             }
@@ -1719,26 +1840,39 @@ function getSubcategory(prod) {
 function showProductsForCategory() {
         productList.innerHTML = "";
         const term = (productSearchInput && productSearchInput.value || "").trim().toLowerCase();
+        const allProducts = window.products || [];
 
-        let filtered = (window.products || []).filter(
-          p => getMainCategory(p) === currentMainCategory
-        );
+        if (!currentMainCategory) {
+          const msg = document.createElement("p");
+          msg.className = "muted";
+          msg.textContent = "Pick a category to see products.";
+          productList.appendChild(msg);
+          return;
+        }
 
-        if (currentMainCategory === "Snacks & Candy") {
+        // Always respect the product's real category:
+        //  - Search looks at ALL products
+        //  - But results are only shown inside the category they actually belong to
+        let filtered = allProducts.filter(p => {
+          if (getMainCategory(p) !== currentMainCategory) return false;
+
+          // Apply subcategory filter if one is selected
           if (currentSubcategory) {
-            filtered = filtered.filter(p => getSnacksSubcategory(p) === currentSubcategory);
+            if (getSubcategory(p) !== currentSubcategory) return false;
           }
-        } else if (currentSubcategory) {
-          filtered = filtered.filter(p => getSubcategory(p) === currentSubcategory);
-        }
 
-        if (term) {
-          filtered = filtered.filter(p => {
-            const label = getProductLabel(p).toLowerCase();
-            const meta = (p.packSize || "").toLowerCase();
-            return label.includes(term) || meta.includes(term);
-          });
-        }
+          if (!term) return true;
+
+          const label = getProductLabel(p).toLowerCase();
+          const meta  = (p.packSize || "").toLowerCase();
+          const sku   = (p.sku || "").toLowerCase();
+
+          return (
+            label.includes(term) ||
+            meta.includes(term) ||
+            sku.includes(term)
+          );
+        });
 
         if (!filtered.length) {
           const p = document.createElement("p");
@@ -1773,29 +1907,37 @@ function showProductsForCategory() {
               )}`;
             }
 
+            // Start collapsed – hide details until row is expanded
+            metaEl.style.display = "none";
+
             main.appendChild(nameEl);
             main.appendChild(metaEl);
+
+            // Toggle expanded details on tap of the left side
+            main.addEventListener("click", () => {
+              const expanded = row.classList.toggle("expanded");
+              metaEl.style.display = expanded ? "block" : "none";
+            });
 
             const controls = document.createElement("div");
             controls.className = "product-controls";
 
-            
-const qtyInput = document.createElement("input");
-qtyInput.type = "number";
-qtyInput.min = "1";
-qtyInput.step = "1";
-qtyInput.value = "1";
-autoSizeQtyInput(qtyInput);
+            const qtyInput = document.createElement("input");
+            qtyInput.type = "number";
+            qtyInput.min = "1";
+            qtyInput.step = "1";
+            qtyInput.value = "1";
+            autoSizeQtyInput(qtyInput);
 
-qtyInput.addEventListener("input", () => {
-  if (qtyInput.value === "" || Number(qtyInput.value) < 1) {
-    qtyInput.value = "1";
-  }
-  autoSizeQtyInput(qtyInput);
-});
+            qtyInput.addEventListener("input", () => {
+              if (qtyInput.value === "" || Number(qtyInput.value) < 1) {
+                qtyInput.value = "1";
+              }
+              autoSizeQtyInput(qtyInput);
+            });
 
-const addBtn = document.createElement("button");
-addBtn.textContent = "Add";
+            const addBtn = document.createElement("button");
+            addBtn.textContent = "Add";
             addBtn.className = "btn-sm btn-primary";
             addBtn.addEventListener("click", () => {
               const qty = parseInt(qtyInput.value, 10) || 1;
@@ -1810,39 +1952,6 @@ addBtn.textContent = "Add";
 
             productList.appendChild(row);
           });
-      }
-
-      function addToCart(prod, qty) {
-        if (!prod) return;
-        const quantity = qty && qty > 0 ? qty : 1;
-
-        // Normalize fields from product
-        const sku = (prod.sku || "").toString();
-        const name = prod.name || "";
-        const packSize = prod.packSize || prod.pack_size || "";
-        const price = Number(prod.price || 0);
-
-        // Try to merge with an existing cart line
-        const existing = cartItems.find(item =>
-          item.sku === sku &&
-          item.name === name &&
-          (item.packSize || "") === packSize &&
-          Number(item.price || 0) === price
-        );
-
-        if (existing) {
-          existing.qty += quantity;
-        } else {
-          cartItems.push({
-            sku,
-            name,
-            packSize,
-            price,
-            qty: quantity
-          });
-        }
-
-        renderCart();
       }
 
 function renderCart() {
@@ -1948,45 +2057,49 @@ function renderCart() {
 
       function buildPoText() {
         const customerId = customerSelect.value || "";
-        const customerName =
-          (window.customers || []).find(c => c.id === customerId)?.name || "";
+        const customerObj = (window.customers || []).find(c => c.id === customerId);
+        const customerName = customerObj?.name || "";
         const note = orderNoteInput.value || "";
         const now = new Date();
         const dateStr = now.toISOString().slice(0, 10);
+
+        const salespersonName = currentUser || "Not signed in";
+        const salespersonEmail = (currentUserProfile && currentUserProfile.email) || "Not set";
 
         const headerLines = [
           "218 SUPPLY – PURCHASE ORDER",
           "----------------------------------------",
           "Date: " + dateStr,
-          "Salesperson: " + (currentUser || "Not signed in"),
-          "Salesperson Email: " + ((currentUserProfile && currentUserProfile.email) || "Not set"),
+          "Salesperson: " + salespersonName,
+          "Salesperson Email: " + salespersonEmail,
           "Customer: " + (customerName || "N/A") + (customerId ? " (" + customerId + ")" : ""),
           note ? "Notes: " + note : "",
           ""
         ].filter(Boolean);
 
         const itemLines = cartItems.map((item, idx) => {
-          return (
-            (idx + 1) + ". " +
-            item.name +
-            " | SKU " + item.sku +
-            " | " + item.packSize +
-            " | Qty " + item.qty +
-            " @ " + formatMoney(item.price) +
-            " = " + formatMoney(item.price * item.qty)
-          );
+          const unitPrice = formatMoney(item.price || 0);
+          const lineTotal = formatMoney((item.price || 0) * (item.qty || 0));
+          const lines = [
+            (idx + 1) + ") " + (item.name || ""),
+            "   SKU: " + (item.sku || "")
+          ];
+          if (item.packSize) {
+            lines.push("   Pack: " + item.packSize);
+          }
+          lines.push("   Qty: " + (item.qty || 0));
+          lines.push("   Unit: " + unitPrice);
+          lines.push("   Line Total: " + lineTotal);
+          return lines.join("\n");
         });
 
         const totals = computeTotals();
-        const subtotal = totals.subtotal;
-        const taxAmount = totals.taxAmount;
-        const grandTotal = totals.grandTotal;
 
         const footer = [
           "",
-          "SUBTOTAL: " + formatMoney(subtotal),
-          "SALES TAX (7.375%): " + formatMoney(taxAmount),
-          "TOTAL (with tax): " + formatMoney(grandTotal),
+          "SUBTOTAL: " + formatMoney(totals.subtotal),
+          "SALES TAX (7.375%): " + formatMoney(totals.taxAmount),
+          "TOTAL (with tax): " + formatMoney(totals.grandTotal),
           "",
           "Thanks for your business!",
           "218 Supply"
@@ -2588,10 +2701,7 @@ function renderCart() {
         }
         orderMain.classList.add("hidden");
         addItemPage.classList.remove("hidden");
-        const firstCatBtn = categoryGrid.querySelector(".category-btn");
-        if (firstCatBtn && !firstCatBtn.classList.contains("active")) {
-          firstCatBtn.click();
-        }
+        // Do not auto-open any category; let the user choose which one to expand.
       });
 
       backToOrderBtn.addEventListener("click", () => {
