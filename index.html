@@ -1227,7 +1227,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-            function addToCart(prod, qty) {
+      function addToCart(prod, qty) {
         if (!prod) return;
         const quantity = Math.max(1, parseInt(qty, 10) || 1);
         const sku = (prod.sku || "").trim();
@@ -1256,7 +1256,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderCart();
       }
 
-let customerProfiles = {};
+      let customerProfiles = {};
       let editingCustomerObj = null;
       let currentProfileCustomerId = null;
 
@@ -1776,7 +1776,7 @@ function getSubcategory(prod) {
         }
 
         if (!currentMainCategory || !cats.includes(currentMainCategory)) {
-          currentMainCategory = cats[0];
+          currentMainCategory = null;
         }
 
         cats.forEach(cat => {
@@ -1855,14 +1855,6 @@ function getSubcategory(prod) {
           categoryGrid.appendChild(card);
         });
 
-        // Open the current or first category by default
-        const initialCard =
-          categoryGrid.querySelector('.accordion-card[data-category="' + currentMainCategory + '"]') ||
-          categoryGrid.querySelector(".accordion-card");
-        if (initialCard) {
-          const headerBtn = initialCard.querySelector(".accordion-header");
-          if (headerBtn) headerBtn.click();
-        }
       }
 
 function buildSubcategories() {
@@ -2742,7 +2734,8 @@ function renderCart() {
         customerSelectPage.classList.remove("hidden");
         customerSearchInput.value = "";
         renderCustomerList();
-        customerSearchInput.focus();
+        // no auto-focus; avoid popping mobile keyboard
+
       });
 
       // change customer
@@ -2758,7 +2751,8 @@ function renderCart() {
           customerSelectPage.classList.remove("hidden");
           customerSearchInput.value = "";
           renderCustomerList();
-          customerSearchInput.focus();
+          // no auto-focus; avoid popping mobile keyboard
+
         });
       }
 
