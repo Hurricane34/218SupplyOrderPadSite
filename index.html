@@ -166,7 +166,7 @@
 
     label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       margin-bottom: 4px;
       font-weight: 600;
     }
@@ -247,7 +247,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
     }
 
     .muted {
@@ -259,7 +259,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 8px;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
     }
     th, td {
       padding: 6px 8px;
@@ -305,7 +305,7 @@
       background: transparent;
       border: none;
       color: #e5e7eb;
-      padding: 4px 2px;
+      padding: 10px 8px;
       cursor: pointer;
     }
 
@@ -363,8 +363,8 @@
 
     .subcat-chip {
       border-radius: 999px;
-      padding: 0.4rem 0.9rem;
-      font-size: 0.85rem;
+      padding: 0.55rem 1.1rem;
+      font-size: 0.9rem;
       border: 1px solid rgba(55,65,81,0.9);
       background: linear-gradient(135deg, rgba(122,27,27,0.7), rgba(31,77,50,0.7));
       color: #f3f4f6;
@@ -666,7 +666,7 @@
       max-height: 360px;
     }
     .cart-empty {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: #6b7280;
     }
     .cart-box-body table {
@@ -1086,6 +1086,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const cancelLoginBtn        = document.getElementById("cancelLoginBtn");
       const confirmLoginBtn       = document.getElementById("confirmLoginBtn");
 
+      const cartHeaderBtn           = document.getElementById("cartHeaderBtn");
       const settingsBtn              = document.getElementById("settingsBtn");
       const settingsModalBackdrop    = document.getElementById("settingsModalBackdrop");
       
@@ -1161,8 +1162,72 @@ document.addEventListener("DOMContentLoaded", () => {
       let currentUserProfile = null;
       let userProfiles = {};
       let cartItems = [];
+      const CART_STORAGE_KEY = "orderpadCart_v1";
 
-      function addToCart(prod, qty) {
+      function saveCartState() {
+        try {
+          const payload = {
+            cartItems,
+            customerId: customerSelect ? customerSelect.value || "" : "",
+            orderNote: orderNoteInput ? orderNoteInput.value || "" : ""
+          };
+          localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(payload));
+        } catch (e) {
+          console.warn("Could not save cart state", e);
+        }
+      }
+
+      function loadCartState() {
+        try {
+          const raw = localStorage.getItem(CART_STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== "object") return;
+
+          if (Array.isArray(parsed.cartItems)) {
+            cartItems = parsed.cartItems
+              .map(item => ({
+                sku: (item.sku || "").toString(),
+                name: item.name || "",
+                packSize: item.packSize || "",
+                price: Number(item.price || 0),
+                qty: Number(item.qty || 0) || 1
+              }))
+              .filter(item => item.sku || item.name);
+          }
+
+          if (parsed.customerId && typeof customerSelect !== "undefined" && customerSelect) {
+            customerSelect.value = parsed.customerId;
+            const opt = customerSelect.options[customerSelect.selectedIndex];
+            if (opt && typeof orderCustomerDisplay !== "undefined" && orderCustomerDisplay) {
+              orderCustomerDisplay.textContent = opt.textContent || "No customer selected";
+            }
+            if (typeof addItemBtn !== "undefined" && addItemBtn) {
+              addItemBtn.disabled = false;
+            }
+            if (typeof generateSummaryBtn !== "undefined" && generateSummaryBtn) {
+              generateSummaryBtn.disabled = false;
+            }
+          }
+
+          if (parsed.orderNote && typeof orderNoteInput !== "undefined" && orderNoteInput) {
+            orderNoteInput.value = parsed.orderNote;
+          }
+        } catch (e) {
+          console.warn("Could not load cart state", e);
+        }
+      }
+
+      function clearCartState() {
+        try {
+          localStorage.removeItem(CART_STORAGE_KEY);
+        } catch (e) {
+          console.warn("Could not clear cart state", e);
+        }
+      }
+
+
+            function addToCart(prod, qty) {
         if (!prod) return;
         const quantity = Math.max(1, parseInt(qty, 10) || 1);
         const sku = (prod.sku || "").trim();
@@ -1170,8 +1235,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const packSize = prod.packSize || "";
         const price = Number(prod.price || 0);
 
-        // If already in cart, bump quantity; otherwise add new line
-        const existingIndex = cartItems.findIndex(item => item.sku === sku);
+        // If SKU exists, merge by SKU; if SKU is blank, always create a new line item.
+        let existingIndex = -1;
+        if (sku) {
+          existingIndex = cartItems.findIndex(item => item.sku === sku);
+        }
+
         if (existingIndex >= 0) {
           cartItems[existingIndex].qty += quantity;
         } else {
@@ -1186,7 +1255,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderCart();
       }
-      let customerProfiles = {};
+
+let customerProfiles = {};
       let editingCustomerObj = null;
       let currentProfileCustomerId = null;
 
@@ -2021,6 +2091,7 @@ function renderCart() {
         const totals = computeTotals();
         orderTotalCell.textContent = formatMoney(totals.subtotal);
         generateSection.classList.remove("hidden");
+        saveCartState();
       }
 
       function clearOrder() {
@@ -2033,6 +2104,7 @@ function renderCart() {
         orderNoteInput.value = "";
         addItemBtn.disabled = true;
         generateSummaryBtn.disabled = true;
+        clearCartState();
       }
 
       function computeTotals() {
@@ -2522,6 +2594,7 @@ function renderCart() {
           showProductsForCategory();
         });
       }
+      loadCartState();
       renderCart();
       renderCustomerList();
 
@@ -2732,6 +2805,7 @@ function renderCart() {
         if (!result) return;
         const { doc, filename } = result;
         doc.save(filename);
+        clearCartState();
       });
 
       emailPoBtn.addEventListener("click", () => {
