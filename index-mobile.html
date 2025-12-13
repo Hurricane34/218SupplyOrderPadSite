@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>218 OrderPad - Minimal</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:18px;background:#0f172a;color:#e5e7eb}
+    .card{background:#111827;border:1px solid #334155;border-radius:14px;padding:14px;max-width:860px;margin:0 auto}
+    code{background:#0b1220;padding:2px 6px;border-radius:8px}
+    .ok{color:#34d399} .bad{color:#fb7185}
+    a{color:#93c5fd}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 10px;">218 OrderPad – Minimal Deploy Check</h2>
+    <div id="out">Loading…</div>
+    <p style="opacity:.85;margin-top:12px;">
+      Quick checks:
+      <br>1) <code>/data.js</code>
+      <br>2) <code>/products_from_csv.js</code>
+    </p>
+  </div>
+
+  <script src="data.js"></script>
+<script>
+    const out = document.getElementById("out");
+
+    function isArr(a){ return Array.isArray(a); }
+
+    const custCount = isArr(window.customers) ? window.customers.length : 0;
+    const prodCount = isArr(window.products) ? window.products.length : 0;
+
+    out.innerHTML = `
+      <div>data.js loaded: <span class="${custCount>0?'ok':'bad'}">${custCount>0?'YES':'NO'}</span> (customers: <b>${custCount}</b>)</div>
+      <div style="margin-top:6px;">products_from_csv.js loaded: <span class="${prodCount>0?'ok':'bad'}">${prodCount>0?'YES':'NO'}</span> (products: <b>${prodCount}</b>)</div>
+      <div style="margin-top:12px;opacity:.9;">
+        Open:
+        <a href="/data.js" target="_blank">/data.js</a> ·
+        <a href="/products_from_csv.js" target="_blank">/products_from_csv.js</a>
+      </div>
+    `;
+  </script>
+</body>
+</html>

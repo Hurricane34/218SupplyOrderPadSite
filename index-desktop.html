@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>218 Supply – Order Pad</title>
+  <title>218 Supply – Order Pad (Desktop)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
     :root {
       --header-start: #7a1b1b;
       --header-end:   #1f4d32;
-      --accent-main:  #9e2a2b;
-      --accent-alt:   #335c67;
+      --accent-main:  var(--header-start);
+      --accent-alt:   var(--header-end);
       --bg-app:       #0f172a;
       --card-bg:      #ffffff;
     }
@@ -213,14 +213,24 @@
       filter: brightness(0.94);
     }
     .btn-primary {
-      background: var(--accent-main);
-      color: white;
-      width: 100%;
+      background: var(--header-start);
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      padding: 0.85rem 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.18);
     }
     .btn-secondary {
-      background: var(--accent-alt);
-      color: white;
-      width: 100%;
+      background: var(--header-end);
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      padding: 0.85rem 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.18);
     }
     .btn-link {
       background: transparent;
@@ -290,11 +300,11 @@
     }
 
     .accordion-card {
-      background: radial-gradient(circle at top left, #111827, #020617);
-      border-radius: 18px;
-      border: 1px solid rgba(75, 85, 99, 0.95);
-      padding: 10px 12px 8px;
-      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.95);
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.08);
+      overflow: hidden;
     }
 
     .accordion-header {
@@ -302,11 +312,13 @@
       width: 100%;
       align-items: center;
       justify-content: space-between;
-      background: transparent;
+      background: #f9fafb;
       border: none;
-      color: #e5e7eb;
-      padding: 10px 8px;
+      color: #111827;
+      padding: 12px 14px;
       cursor: pointer;
+      font-weight: 800;
+      font-size: 0.98rem;
     }
 
     .accordion-header-main {
@@ -321,8 +333,9 @@
     }
 
     .accordion-meta {
-      font-size: 0.75rem;
-      opacity: 0.8;
+      font-size: 0.82rem;
+      color: #6b7280;
+      font-weight: 600;
     }
 
     .accordion-chevron {
@@ -336,21 +349,54 @@
     }
 
     .accordion-body {
-      margin-top: 6px;
-      border-top: 1px solid rgba(55, 65, 81, 0.9);
-      padding-top: 6px;
       display: none;
-      border-radius: 0.9rem;
-      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(17,24,39,0.98));
-      border: 1px solid rgba(31,41,55,0.95);
-      padding: 8px 10px 10px;
+      padding: 10px 14px 14px;
+      background: #ffffff;
+      border-top: 1px solid #e5e7eb;
+      max-height: none;
+      overflow: visible;
     }
 
     .accordion-card.open .accordion-body {
       display: block;
     }
 
-    /* Subcategory chips – thin pill row like catalog */
+    /* When open, constrain the body and scroll inside */
+      #addItemPage .accordion-card.open .accordion-body {
+        display: block;
+        max-height: 170px;       /* tuned for header padding */
+        overflow-y: auto;
+      }
+
+      /* When closed, keep the card height stable */
+      #addItemPage .accordion-card:not(.open) .accordion-body {
+        display: block;
+        max-height: 0;
+        overflow: hidden;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-top: none;
+      }
+    }
+/* When open, show the body but constrain it to the card */
+      .accordion-card.open .accordion-body {
+        display: block;
+        max-height: 206px;       /* 280 - header area (approx) */
+        overflow-y: auto;
+      }
+
+      /* When closed, keep body from affecting layout (card stays same height) */
+      .accordion-card:not(.open) .accordion-body {
+        display: block;          /* keep layout stable */
+        max-height: 0;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+        border: none;
+      }
+    }
+
+        /* Subcategory chips – thin pill row like catalog */
     .subcategory-grid {
       display: flex;
       flex-direction: row;
@@ -363,24 +409,21 @@
 
     .subcat-chip {
       border-radius: 999px;
-      padding: 0.55rem 1.1rem;
-      font-size: 0.9rem;
-      border: 1px solid rgba(55,65,81,0.9);
-      background: linear-gradient(135deg, rgba(122,27,27,0.7), rgba(31,77,50,0.7));
-      color: #f3f4f6;
+      padding: 0.38rem 0.8rem;
+      font-size: 0.82rem;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      color: #111827;
       cursor: pointer;
       white-space: nowrap;
       flex: 0 0 auto;
     }
 
     .subcat-chip.active {
-      background: linear-gradient(135deg, var(--header-start), var(--header-end));
-      border-color: rgba(248,250,252,0.95);
-      color: #f9fafb;
-      font-weight: 600;
-      box-shadow: 0 0 0 1px rgba(248,250,252,0.2);
+      border-color: rgba(122,27,27,0.35);
+      background: rgba(122,27,27,0.08);
+      color: #111827;
     }
-
 
 .product-row {
       display: flex;
@@ -431,8 +474,367 @@
       padding-right: 12px;
     }
 
+    .big-option-btn {
+      display: block;
+      width: 90%;
+      max-width: 420px;
+      margin: 0 auto 14px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      padding: 1.6rem 1.2rem;
+      border-radius: 16px;
+      text-align: center;
+    }
 
-    /* CUSTOMER LIST PAGE */
+    .customer-lists-days {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .customer-list-day-card {
+      width: 100%;
+      text-align: left;
+      background: #f9fafb;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .customer-list-day-card .day-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .customer-list-day-card .day-meta {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    /* Start options layout (Select Customer / Customer Lists) */
+    .start-options-card {
+      max-width: 480px;
+      margin: 2rem auto 0;
+      padding: 18px 20px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.35);
+    }
+    .start-options-title {
+      margin: 0 0 0.25rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .start-options-subtitle {
+      margin: 0 0 1.25rem;
+      font-size: 0.9rem;
+    }
+    .start-options-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: stretch;
+    }
+
+    /* Desktop: keep card centered but left-align contents */
+    @media (min-width: 768px) {
+      #startOptionsCard {
+        text-align: left;
+      }
+      #startOptionsCard .start-options-buttons {
+        align-items: flex-start;
+      }
+      #startOptionsCard .big-option-btn {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+
+    /* Desktop-only: multi-column order flow (keeps steps on one page) */
+    @media (min-width: 1024px) {
+      /* Keep the whole flow anchored to the left */
+      main {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 16px;
+        padding: 18px 16px 24px;
+        max-width: none;
+        overflow-x: hidden; /* Option B: fit viewport, no horizontal scroll */
+      }
+
+      /* Panels should be able to shrink to fit the viewport */
+      #startCard,
+      #startOptionsCard,
+      #customerListsPage,
+      #customerSelectPage,
+      #addItemPage,
+      #orderMain {
+        margin: 0 !important;
+        min-width: 0; /* critical so flex children can shrink */
+      }
+
+      /* Column sizing that flexes to fit */
+      #startCard {
+        flex: 0 1 clamp(200px, 16vw, 260px);
+        text-align: left !important;
+        background: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      #startCard .start-card-button {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 1.35rem 1rem !important;
+        font-size: 1.1rem !important;
+        border-radius: 16px !important;
+      }
+
+      /* Step 2: Options or Lists (same slot) */
+      #startOptionsCard,
+      #customerListsPage {
+        flex: 0 1 clamp(260px, 22vw, 360px);
+        max-width: none;
+      }
+      #startOptionsCard.start-options-card {
+        margin: 0 !important;
+      }
+      #startOptionsCard .start-options-title,
+      #startOptionsCard .start-options-subtitle {
+        text-align: left !important;
+      }
+      #startOptionsCard .big-option-btn {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 0 14px 0 !important;
+        padding: 1.35rem 1rem !important;
+        font-size: 1.05rem !important;
+        border-radius: 16px !important;
+      }
+
+      /* Step 3: Customer selection */
+      #customerSelectPage {
+        flex: 0 1 clamp(280px, 24vw, 380px);
+        max-width: none;
+      }
+
+      /* Step 4: Items (fills the remaining space) */
+      #addItemPage {
+        flex: 1 1 auto;
+        min-width: 260px;
+      }
+
+      /* Step 5: Cart/Order */
+      #orderMain {
+        flex: 0 1 clamp(300px, 26vw, 460px);
+        max-width: none;
+      }
+
+      /* Keep cards consistent */
+      #startOptionsCard.card,
+      #customerSelectPage.card,
+      #addItemPage.card,
+      #orderMain.card,
+      #customerListsPage.card {
+        border-radius: 18px;
+        box-shadow: 0 2px 8px rgba(15,23,42,0.25);
+      }
+    }
+
+      /* Never auto-center panels on desktop */
+      #startCard,
+      #startOptionsCard,
+      #customerListsPage,
+      #customerSelectPage,
+      #addItemPage,
+      #orderMain {
+        margin: 0 !important;
+      }
+
+      /* Column 1: Start (left) */
+      #startCard {
+        flex: 0 0 260px;
+        text-align: left !important;
+        background: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      #startCard .start-card-button {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 1.4rem 1rem !important;
+        font-size: 1.15rem !important;
+        border-radius: 16px !important;
+      }
+
+      /* Column 2: Options (next to Start) */
+      #startOptionsCard {
+        flex: 0 0 360px;
+        max-width: 360px;
+      }
+      /* remove mobile centering on desktop */
+      #startOptionsCard.start-options-card {
+        margin: 0 !important;
+      }
+      #startOptionsCard .start-options-title,
+      #startOptionsCard .start-options-subtitle {
+        text-align: left !important;
+      }
+      #startOptionsCard .big-option-btn {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 0 14px 0 !important;
+        padding: 1.4rem 1rem !important;
+        font-size: 1.1rem !important;
+        border-radius: 16px !important;
+      }
+
+      /* Column 2 alt: Customer Lists uses same slot */
+      #customerListsPage {
+        flex: 0 0 360px;
+        max-width: 360px;
+      }
+
+      /* Column 3: Customer selection */
+      #customerSelectPage {
+        flex: 0 0 380px;
+        max-width: 380px;
+      }
+
+      /* Column 4: Items */
+      #addItemPage {
+        flex: 1 1 520px;
+        min-width: 460px;
+      }
+
+      /* Column 5: Cart/Order */
+      #orderMain {
+        flex: 0 0 440px;
+        max-width: 560px;
+      }
+
+      /* Keep cards looking consistent in columns */
+      #startOptionsCard.card,
+      #customerSelectPage.card,
+      #addItemPage.card,
+      #orderMain.card,
+      #customerListsPage.card {
+        border-radius: 18px;
+        box-shadow: 0 2px 8px rgba(15,23,42,0.25);
+      }
+    }
+
+      /* Let panels sit side-by-side */
+      #startCard,
+      #startOptionsCard,
+      #customerListsPage,
+      #customerSelectPage,
+      #addItemPage,
+      #orderMain {
+        margin-top: 0 !important;
+      }
+
+      /* Column 1: Start */
+      #startCard {
+        flex: 0 0 240px;
+        text-align: left;
+        margin-left: 0;
+      }
+      #startCard .start-card-button {
+        width: 100%;
+        max-width: none;
+        padding: 1.25rem 1rem;
+        font-size: 1.1rem;
+        border-radius: 16px;
+      }
+
+      /* Column 2: Options (Select / Lists) */
+      #startOptionsCard,
+      #customerListsPage {
+        flex: 0 0 320px;
+        max-width: 320px;
+      }
+      .start-options-card {
+        margin: 0;
+      }
+      #startOptionsCard .start-options-title,
+      #startOptionsCard .start-options-subtitle {
+        text-align: left;
+      }
+      #startOptionsCard .big-option-btn {
+        width: 100%;
+        max-width: none;
+        margin: 0 0 14px 0;
+        padding: 1.25rem 1rem;
+        font-size: 1.05rem;
+      }
+
+      /* Column 3: Customer selection */
+      #customerSelectPage {
+        flex: 0 0 360px;
+        max-width: 360px;
+      }
+
+      /* Column 4: Items */
+      #addItemPage {
+        flex: 1 1 520px;
+        min-width: 420px;
+      }
+
+      /* Column 5: Cart/Order */
+      #orderMain {
+        flex: 0 0 420px;
+        max-width: 520px;
+      }
+
+      /* Keep cards looking consistent in columns */
+      #customerSelectPage.card,
+      #addItemPage.card,
+      #orderMain.card,
+      #customerListsPage.card,
+      #startOptionsCard.card {
+        border-radius: 18px;
+        box-shadow: 0 2px 8px rgba(15,23,42,0.25);
+      }
+    }
+
+    
+    /* Desktop: tighten the Items (Add Item) panel density */
+    @media (min-width: 1024px) {
+      #addItemPage .product-row {
+        padding: 8px 10px;
+      }
+      #addItemPage .qty-input {
+        width: 56px;
+        padding: 6px 8px;
+        font-size: 0.9rem;
+      }
+      #addItemPage .btn-add {
+        padding: 0.55rem 0.9rem;
+        font-size: 0.9rem;
+        border-radius: 12px;
+      }
+    }
+
+    
+    /* Items panel readability */
+    #addItemPage .product-row,
+    #addItemPage .product-row * {
+      color: #111827;
+    }
+    #addItemPage .muted,
+    #addItemPage .help,
+    #addItemPage .subtext {
+      color: #6b7280;
+    }
+
+        /* CUSTOMER LIST PAGE */
     .customer-list {
       margin-top: 10px;
       max-height: 65vh;
@@ -714,7 +1116,684 @@
       display: inline-block;
       flex: 1;
     }
-  </style>
+  
+    /* Desktop-only: 5-column workflow layout (Start -> Options -> Customer -> Items -> Cart/PO) */
+    @media (min-width: 1024px) {
+      main {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 16px;
+        padding: 18px 16px 24px;
+        max-width: none;
+        overflow-x: hidden; /* fit viewport, no horizontal scroll */
+      }
+
+      /* Allow columns to shrink */
+      #startCard,
+      #startOptionsCard,
+      #customerListsPage,
+      #customerSelectPage,
+      #addItemPage,
+      #orderMain {
+        min-width: 0;
+        margin: 0 !important;
+      }
+
+      /* Column 1: Start */
+      #startCard {
+        flex: 0 1 clamp(220px, 16vw, 280px);
+        text-align: left !important;
+        background: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      #startCard .start-card-button {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+      }
+
+      /* Column 2: Options (or Customer Lists) */
+      #startOptionsCard,
+      #customerListsPage {
+        flex: 0 1 clamp(260px, 20vw, 360px);
+        max-width: none !important;
+      }
+      #startOptionsCard.start-options-card {
+        margin: 0 !important;
+      }
+      #startOptionsCard .big-option-btn {
+        width: 100% !important;
+        max-width: none !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+
+      /* Column 3: Customer */
+      #customerSelectPage {
+        flex: 0 1 clamp(280px, 22vw, 380px);
+        max-width: none !important;
+      }
+
+      /* Column 4: Items (always-open browser) */
+      #addItemPage {
+        flex: 1 1 auto;
+        min-width: 320px;
+      }
+
+      /* Column 5: Cart / Generate PO */
+      #orderMain {
+        flex: 0 1 clamp(320px, 24vw, 480px);
+        max-width: none !important;
+      }
+
+      /* In desktop workflow, the item picker lives in column 4, so hide the big Add New Item button in column 5 */
+      #goToAddItemBtn {
+        display: none !important;
+      }
+
+      /* Slightly tighten headers in panels so more content fits */
+      #addItemPage .page-header-row h2,
+      #customerSelectPage .page-header-row h2 {
+        font-size: 1.05rem;
+      }
+    }
+
+    /* Desktop: allow full column expansion (no internal scroll trapping) */
+    @media (min-width: 1024px) {
+      #orderMain,
+      #addItemPage,
+      #customerSelectPage,
+      #startOptionsCard,
+      #customerListsPage {
+        max-height: none !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      /* Common inner wrappers that sometimes get scroll-locked */
+      #orderMain .card-body,
+      #orderMain .panel-body,
+      #orderMain .scroll-area,
+      #orderMain .cart-scroll,
+      #addItemPage .card-body,
+      #addItemPage .panel-body,
+      #addItemPage .scroll-area,
+      #addItemPage .items-scroll,
+      #customerSelectPage .card-body,
+      #customerSelectPage .panel-body,
+      #customerSelectPage .scroll-area {
+        max-height: none !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      main {
+        overflow-y: visible !important;
+      }
+    }
+
+    /* Items (Add Item) focus mode */
+    #addItemPage .hidden-by-focus { display: none !important; }
+    #itemsAllCategoriesBtn { margin: 0.5rem 0 0.25rem; }
+
+    /* Desktop bonus: tighter density in Items */
+    @media (min-width: 1024px) {
+      #addItemPage .product-row { padding: 6px 8px !important; }
+      #addItemPage .qty-input { width: 52px !important; padding: 5px 7px !important; font-size: 0.88rem !important; }
+      #addItemPage .btn-add, #addItemPage .add-btn { padding: 0.5rem 0.85rem !important; font-size: 0.88rem !important; border-radius: 12px !important; }
+      #addItemPage .subcat-chip { padding: 0.3rem 0.65rem !important; font-size: 0.78rem !important; }
+    }
+
+    /* Desktop Items two-lane layout (Option 3) */
+    .items-split { display: block; }
+    .items-left-title { margin: 6px 0 8px; font-weight: 800; color: #6b7280; }
+    .cat-row {
+      width: 100%;
+      text-align: left;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 10px 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      color: #111827;
+      font-weight: 800;
+    }
+    .cat-row .cat-meta {
+      font-size: 0.78rem;
+      color: #6b7280;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .cat-row.active {
+      border-color: rgba(122, 27, 27, 0.45);
+      background: rgba(122, 27, 27, 0.08);
+    }
+
+    @media (min-width: 1024px) {
+      #addItemPage .items-split {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      #addItemPage .items-left {
+        width: 210px;
+        flex: 0 0 210px;
+      }
+      #addItemPage .items-right {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      /* Bonus: tighter density in Items */
+      #addItemPage .product-row { padding: 6px 8px; }
+      #addItemPage .qty-input { width: 52px; padding: 5px 7px; font-size: 0.88rem; }
+      #addItemPage .btn-add, #addItemPage .add-btn { padding: 0.5rem 0.85rem; font-size: 0.88rem; border-radius: 12px; }
+      #addItemPage .subcat-chip { padding: 0.3rem 0.65rem; font-size: 0.78rem; }
+    }
+
+
+    /* Desktop: 4-column layout (Start + Options stacked) */
+    @media (min-width: 1024px) {
+      #colStart {
+        flex: 0 1 clamp(240px, 18vw, 320px);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      /* Start card itself should look like a simple rail (no huge padding) */
+      #startCard {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+      }
+
+      /* Keep Start button full width inside the rail */
+      #startCard .start-card-button {
+        width: 100% !important;
+        max-width: none !important;
+      }
+
+      /* Start options + customer lists behave like panels under Start */
+      #startOptionsCard,
+      #customerListsPage {
+        margin: 0 !important;
+        max-width: none !important;
+      }
+
+      /* Main flow columns now: StartRail | Customer | Items | Cart */
+      main {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 16px;
+      }
+
+      /* Make sure these are the only columns taking horizontal space */
+      #customerSelectPage { flex: 0 1 clamp(280px, 22vw, 380px); }
+      #addItemPage { flex: 1 1 auto; min-width: 420px; }
+      #orderMain { flex: 0 1 clamp(320px, 26vw, 520px); }
+
+      /* Prevent hidden panels from reserving space */
+      #startOptionsCard.hidden,
+      #customerListsPage.hidden,
+      #customerSelectPage.hidden,
+      #addItemPage.hidden,
+      #orderMain.hidden {
+        display: none !important;
+      }
+    }
+
+
+    /* Add Item: compact category tabs (no item counts) */
+    #addItemPage .accordion-header {
+      padding: 8px 12px !important;
+      font-size: 0.9rem !important;
+      line-height: 1.2;
+    }
+
+    #addItemPage .accordion-card {
+      margin-bottom: 6px;
+    }
+
+
+    /* Add Item: allow longer item descriptions */
+    #addItemPage .product-name,
+    #addItemPage .product-title {
+      white-space: normal;
+      line-height: 1.3;
+    }
+
+    #addItemPage .product-subtext,
+    #addItemPage .product-desc {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+
+
+    /* =========================================================
+       Cohesion Pack v1 (Homogeneity): surfaces, controls, type, spacing, colors
+       CSS-only: does not change layout structure or JS behavior.
+       ========================================================= */
+
+    :root {
+      /* Brand anchors (already used in header) */
+      --brand-red: var(--header-start);
+      --brand-green: var(--header-end);
+
+      /* Neutrals */
+      --ui-bg: #0f172a;              /* app background (already) */
+      --surface: #ffffff;            /* card surface */
+      --surface-tint: #f8fafc;       /* subtle surface tint */
+      --border: #e5e7eb;
+      --border-strong: #d1d5db;
+      --text: #111827;
+      --muted: #6b7280;
+
+      /* Shape + elevation */
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+      --shadow-sm: 0 6px 18px rgba(15, 23, 42, 0.14);
+
+      /* Spacing system (8/16/24) */
+      --s-1: 8px;
+      --s-2: 16px;
+      --s-3: 24px;
+
+      /* Control sizes */
+      --control-h: 38px;
+      --control-h-sm: 32px;
+    }
+
+    /* 1) SURFACES: same card language everywhere */
+    .card {
+      border-radius: var(--radius) !important;
+      border: 1px solid var(--border) !important;
+      box-shadow: var(--shadow) !important;
+      background: var(--surface) !important;
+    }
+
+    /* Inner padding rhythm */
+    .card {
+      padding: var(--s-2) !important;
+    }
+
+    /* Any nested "mini cards" should be lighter */
+    .card .card {
+      box-shadow: var(--shadow-sm) !important;
+      border-radius: var(--radius-sm) !important;
+    }
+
+    /* 2) CONTROLS: inputs, pills, small buttons look like siblings */
+    input[type="text"],
+    input[type="search"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select {
+      height: var(--control-h);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 0 12px;
+      outline: none;
+      box-shadow: none;
+    }
+    textarea {
+      height: auto;
+      padding: 10px 12px;
+    }
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--border-strong);
+      box-shadow: 0 0 0 3px rgba(122, 27, 27, 0.18); /* subtle red focus */
+    }
+
+    /* Ghost / pill buttons unify */
+    .btn-sm.btn-ghost,
+    .pill {
+      height: var(--control-h-sm);
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f3f4f6;
+      color: var(--text);
+      font-weight: 800;
+    }
+    .btn-sm.btn-ghost:hover,
+    .pill:hover {
+      background: #eef2f7;
+      border-color: var(--border-strong);
+    }
+
+    /* Primary + secondary actions (use brand colors consistently) */
+    .btn-primary,
+    .start-card-button,
+    .add-btn,
+    button.add-btn,
+    .btn-add {
+      background: var(--brand-red) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: 16px !important;
+      font-weight: 900 !important;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.20) !important;
+    }
+    .btn-primary:hover,
+    .start-card-button:hover,
+    .add-btn:hover,
+    .btn-add:hover {
+      filter: brightness(1.02);
+    }
+
+    .btn-secondary {
+      background: var(--brand-green) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: 16px !important;
+      font-weight: 900 !important;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18) !important;
+    }
+
+    /* 3) TYPOGRAPHY: one hierarchy (no structural changes) */
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 950;
+      letter-spacing: 0.1px;
+      margin: 0 0 var(--s-1) 0;
+      color: var(--text);
+    }
+    p,
+    .muted,
+    .help,
+    .subtext {
+      color: var(--muted);
+    }
+
+    /* Labels / small captions */
+    label,
+    .order-header-label,
+    .small-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: 0.2px;
+    }
+
+    /* 4) SPACING: enforce 8/16/24 rhythm on common stacks */
+    main {
+      gap: var(--s-3) !important;
+      padding: var(--s-2) !important;
+    }
+
+    /* Common vertical stacks in panels */
+    #startCard,
+    #startOptionsCard,
+    #customerSelectPage,
+    #orderMain,
+    #addItemPage,
+    #customerListsPage {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-1);
+    }
+
+    /* Tidy button groups */
+    .panel-actions,
+    .order-header-row,
+    .order-actions,
+    .top-actions {
+      gap: var(--s-1) !important;
+    }
+
+    /* 5) COLOR USAGE: keep neutrals neutral; reserve red/green for actions */
+    a, .link, .danger-link {
+      color: var(--brand-red);
+    }
+    a:hover, .link:hover, .danger-link:hover {
+      filter: brightness(0.95);
+    }
+
+    /* Make category pills & chips neutral by default */
+    .subcat-chip,
+    .category-pill,
+    .chip {
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .subcat-chip.active,
+    .category-pill.active,
+    .chip.active {
+      border-color: rgba(122, 27, 27, 0.45);
+      box-shadow: 0 0 0 3px rgba(122, 27, 27, 0.10);
+    }
+
+    /* Keep internal scrollers and lists visually consistent */
+    .list,
+    .customer-list,
+    .cart-list {
+      border-radius: var(--radius-sm);
+    }
+
+
+
+    /* ===== UI Refinements: 1) Customer actions, 2) Qty stepper (A), 3) Categories lighter ===== */
+
+    /* 1) Customer action buttons: make them read as tools, not labels */
+    #orderMain .btn-sm.btn-ghost {
+      height: 30px !important;
+      padding: 0 10px !important;
+      font-weight: 800 !important;
+      font-size: 0.78rem !important;
+      background: #f3f4f6 !important;
+      border: 1px solid #e5e7eb !important;
+      color: #111827 !important;
+      box-shadow: none !important;
+    }
+    #orderMain .btn-sm.btn-ghost:hover {
+      background: #eef2f7 !important;
+      border-color: #d1d5db !important;
+    }
+
+    #orderMain .order-header-row {
+      align-items: flex-start !important;
+      gap: 10px !important;
+    }
+    #orderMain .order-header-label {
+      margin-bottom: 4px;
+    }
+    #orderMain .order-header-customer,
+    #orderMain #orderCustomerDisplay {
+      font-weight: 900;
+      font-size: 1.05rem;
+      color: #111827;
+      line-height: 1.15;
+    }
+
+    /* 3) Categories: lighter, smaller, no counts */
+    #addItemPage .category-list button,
+    #addItemPage .category-pill,
+    #addItemPage .category-item {
+      padding: 8px 10px !important;
+      border-radius: 14px !important;
+      border: 1px solid #e5e7eb !important;
+      background: #ffffff !important;
+      font-weight: 850 !important;
+      font-size: 0.85rem !important;
+      color: #111827 !important;
+      box-shadow: none !important;
+    }
+    #addItemPage .category-list button:hover,
+    #addItemPage .category-pill:hover,
+    #addItemPage .category-item:hover {
+      border-color: #d1d5db !important;
+      background: #f9fafb !important;
+    }
+    #addItemPage .category-list button.active,
+    #addItemPage .category-pill.active,
+    #addItemPage .category-item.active,
+    #addItemPage .category-list button[aria-selected="true"] {
+      border-color: rgba(122, 27, 27, 0.55) !important;
+      box-shadow: 0 0 0 3px rgba(122, 27, 27, 0.12) !important;
+    }
+
+    /* Reduce "Categories" label prominence */
+    #addItemPage .categories-label,
+    #addItemPage .categories-title {
+      font-size: 0.78rem !important;
+      color: #6b7280 !important;
+      font-weight: 800 !important;
+      margin: 6px 0 6px !important;
+    }
+
+    /* 2) Quantity stepper option A: inline - 1 + */
+    .qty-stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 6px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: #fff;
+    }
+    .qty-stepper button {
+      height: 26px;
+      min-width: 28px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #f3f4f6;
+      font-weight: 900;
+      color: #111827;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .qty-stepper button:hover {
+      background: #eef2f7;
+      border-color: #d1d5db;
+    }
+    .qty-stepper .qty-value {
+      min-width: 18px;
+      text-align: center;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    /* Hide native number spinners if still present */
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+
+
+
+    /* Quantity stepper (compact, centered) */
+    .qty-stepper{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      padding:2px 6px;
+      border:1px solid #e5e7eb;
+      border-radius:999px;
+      background:#fff;
+      height:30px;
+    }
+    .qty-stepper button{
+      height:24px;
+      min-width:26px;
+      padding:0;
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:#f3f4f6;
+      font-weight:900;
+      font-size:0.95rem;
+      color:#111827;
+      cursor:pointer;
+      line-height:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .qty-stepper .qty-value{
+      min-width:14px;
+      text-align:center;
+      font-weight:900;
+      font-size:0.95rem;
+      color:#111827;
+      line-height:1;
+    }
+    /* Center the stepper within product rows */
+    .product-row .qty-stepper,
+    .product-row-right .qty-stepper,
+    .product-actions .qty-stepper{
+      margin:0 auto;
+    }
+
+
+    /* Hide category item counts (e.g., "25 items") */
+    .category-count,
+    .cat-count,
+    .items-count { display:none !important; }
+
+    /* If counts are plain text in a span inside category buttons, hide that trailing span */
+    .category-list button span:last-child,
+    .category-pill span:last-child{
+      display:none !important;
+    }
+
+
+/* Uniform category button width (match longest label automatically) */
+.category-list {
+  display: grid;
+  grid-template-columns: max-content;
+  row-gap: 8px;
+}
+.category-list button {
+  width: max-content;
+  white-space: nowrap;
+}
+
+
+/* ===== Tweaks: category button sizing + fixed Cart column width ===== */
+
+/* Category buttons: shrink to content, and all match the widest label (Kitchen Essentials) */
+.category-list{
+  display: inline-grid !important;
+  grid-template-columns: max-content !important; /* column becomes as wide as the longest label */
+  row-gap: 8px;
+  justify-items: stretch; /* buttons stretch to the column width */
+}
+.category-list button{
+  width: 100% !important;        /* match the max-content column width */
+  white-space: nowrap;
+  padding: 7px 10px !important;  /* slightly tighter so Kitchen Essentials doesn't feel oversized */
+}
+
+/* Desktop: final column (Cart / Order panel) fixed width regardless of category */
+@media (min-width: 1024px){
+  #orderMain{
+    flex: 0 0 420px !important;
+    width: 420px !important;
+    max-width: 420px !important;
+  }
+}
+
+</style>
 
   <!-- PWA manifest and meta -->
   <link rel="manifest" href="/manifest.json" />
@@ -741,11 +1820,43 @@
   </header>
 
   <main>
-    <div class="card start-card" id="startCard">
+    <div class="card-stack" id="colStart">
+  <div class="card start-card" id="startCard">
       <button class="btn-primary start-card-button" id="startOrderBtn">
         Start a New Order
       </button>
-    </div>
+    
+
+      <div class="card start-options-card hidden" id="startOptionsCard">
+            <h2 class="start-options-title">Create a New Order</h2>
+            <p class="start-options-subtitle muted">Choose how you want to start.</p>
+            <div class="start-options-buttons">
+              <button class="btn-primary big-option-btn" id="startSelectCustomerBtn">Select Customer</button>
+              <button class="btn-secondary big-option-btn" id="startCustomerListsBtn">Customer Lists</button>
+            </div>
+          </div>
+
+      <div id="customerListsPage" class="hidden card">
+            <div class="page-header-row">
+              <h2>Customer Lists</h2>
+              <button class="btn-sm btn-ghost" id="backFromCustomerListsBtn">&larr; Back</button>
+            </div>
+            <p class="muted">Tap a day to see or edit that route list.</p>
+            <div id="customerListsDays" class="customer-lists-days"></div>
+            <div id="customerListGroupContainer" class="hidden">
+              <div class="page-header-row" style="margin-top:12px;">
+                <h3 id="customerGroupTitle" style="margin:0;font-size:0.95rem;">Monday List</h3>
+                <button class="btn-sm btn-ghost" id="editCustomerGroupBtn">Edit List</button>
+              </div>
+              <div id="customerGroupList" class="customer-list" style="margin-top:8px;"></div>
+            </div>
+          </div>
+</div>
+</div>
+
+    
+
+    
 
     <!-- Customer selection page -->
     <div id="customerSelectPage" class="hidden card">
@@ -833,7 +1944,7 @@
     <div id="addItemPage" class="hidden card">
       <div class="page-header-row">
         <h2>Add Item</h2>
-        <div style="display:flex; gap:6px;">
+<div style="display:flex; gap:6px;">
           <button class="btn-sm btn-ghost" id="addProductBtn">Add New Product</button>
           <button class="btn-sm btn-ghost" id="backToOrderBtn">&larr; Back to Order</button>
         </div>
@@ -849,9 +1960,16 @@
           />
         </div>
       </div>
-      <div id="categoryGrid" class="category-grid"></div>
-      <div id="subcategoryGrid" class="subcategory-grid"></div>
-      <div id="productList"></div>
+      <div class="items-split" id="itemsSplit">
+        <div class="items-left">
+          <div class="items-left-title muted" id="itemsLeftTitle">Categories</div>
+          <div id="categoryGrid" class="category-grid"></div>
+        </div>
+        <div class="items-right">
+          <div id="subcategoryGrid" class="subcategory-grid"></div>
+          <div id="productList"></div>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -925,6 +2043,25 @@
       <div class="modal-actions">
         <button class="btn-ghost btn-sm" id="cancelCustomerBtn">Cancel</button>
         <button class="btn-primary btn-sm" id="saveCustomerBtn">Save Customer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer group modal -->
+  <div id="customerGroupModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2 id="customerGroupModalTitle">Edit List</h2>
+      <p class="muted">Tap to add or remove customers from this list.</p>
+      <input
+        type="text"
+        id="customerGroupSearchInput"
+        placeholder="Search customers..."
+        aria-label="Search customers for this list"
+      />
+      <div id="customerGroupSelectList" class="customer-list"></div>
+      <div class="modal-actions">
+        <button class="btn-ghost btn-sm" id="cancelCustomerGroupBtn">Cancel</button>
+        <button class="btn-primary btn-sm" id="saveCustomerGroupBtn">Save List</button>
       </div>
     </div>
   </div>
@@ -1039,7 +2176,44 @@
   <!-- libs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="data.js"></script>
+  <script src="products.generated.js"></script>
+  <script src="customers.generated.js"></script>
 <script>
+  // Robustly remove category item counts like "25 items" wherever they appear in the Add Item UI.
+  function stripItemCountsEverywhere() {
+    // 1) Remove standalone nodes that are just "## items"
+    document.querySelectorAll('span,div,small').forEach(el => {
+      if (!el) return;
+      const t = (el.textContent || '').trim();
+      if (/^\d+\s*items$/i.test(t)) {
+        el.style.display = 'none';
+      }
+    });
+
+    // 2) Remove text nodes containing "## items" inside buttons (categories)
+    document.querySelectorAll('button').forEach(btn => {
+      if (!btn) return;
+      // Only touch buttons that appear to be category buttons (contain "Categories" section nearby or have rounded pill styles)
+      const raw = btn.textContent || '';
+      if (!/\b\d+\s*items\b/i.test(raw)) return;
+
+      btn.childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = node.textContent.replace(/\s*\b\d+\s*items\b\s*/ig, ' ').replace(/\s+/g,' ').trim();
+        }
+      });
+
+      // Also clean any remaining "## items" in descendants
+      btn.querySelectorAll('*').forEach(ch => {
+        if (ch.childNodes && ch.childNodes.length===1 && ch.childNodes[0].nodeType===Node.TEXT_NODE) {
+          ch.textContent = ch.textContent.replace(/\s*\b\d+\s*items\b\s*/ig, ' ').replace(/\s+/g,' ').trim();
+        }
+      });
+    });
+  }
+
+function isDesktopFlow(){ return window.matchMedia && window.matchMedia('(min-width: 1024px)').matches; }
+
     
 function autoSizeQtyInput(input) {
   const len = input.value.length || 1;
@@ -1049,9 +2223,18 @@ function autoSizeQtyInput(input) {
 document.addEventListener("DOMContentLoaded", () => {
       const startCard              = document.getElementById("startCard");
       const startOrderBtn          = document.getElementById("startOrderBtn");
+      const startOptionsCard       = document.getElementById("startOptionsCard");
+      const startSelectCustomerBtn = document.getElementById("startSelectCustomerBtn");
+      const startCustomerListsBtn  = document.getElementById("startCustomerListsBtn");
       const orderMain              = document.getElementById("orderMain");
+      const customerListsPage      = document.getElementById("customerListsPage");
+      const customerListsDays      = document.getElementById("customerListsDays");
+      const backFromCustomerListsBtn = document.getElementById("backFromCustomerListsBtn");
+      const customerListGroupContainer = document.getElementById("customerListGroupContainer");
+      const customerGroupTitle     = document.getElementById("customerGroupTitle");
+      const customerGroupList      = document.getElementById("customerGroupList");
       const addItemPage            = document.getElementById("addItemPage");
-      const customerSelectPage     = document.getElementById("customerSelectPage");
+const customerSelectPage     = document.getElementById("customerSelectPage");
       const customerList           = document.getElementById("customerList");
       const customerSearchInput    = document.getElementById("customerSearchInput");
       const addCustomerFromListBtn = document.getElementById("addCustomerFromListBtn");
@@ -1120,6 +2303,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const newCustomerIdInput      = document.getElementById("newCustomerId");
       const cancelCustomerBtn       = document.getElementById("cancelCustomerBtn");
       const saveCustomerBtn         = document.getElementById("saveCustomerBtn");
+
+      const customerGroupModalBackdrop = document.getElementById("customerGroupModalBackdrop");
+      const customerGroupModalTitle    = document.getElementById("customerGroupModalTitle");
+      const customerGroupSearchInput   = document.getElementById("customerGroupSearchInput");
+      const customerGroupSelectList    = document.getElementById("customerGroupSelectList");
+      const cancelCustomerGroupBtn     = document.getElementById("cancelCustomerGroupBtn");
+      const saveCustomerGroupBtn       = document.getElementById("saveCustomerGroupBtn");
 
       const customerEditModalBackdrop = document.getElementById("customerEditModalBackdrop");
       const editCustomerNameInput     = document.getElementById("editCustomerName");
@@ -1225,7 +2415,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-
       function addToCart(prod, qty) {
         if (!prod) return;
         const quantity = Math.max(1, parseInt(qty, 10) || 1);
@@ -1258,6 +2447,246 @@ document.addEventListener("DOMContentLoaded", () => {
       let customerProfiles = {};
       let editingCustomerObj = null;
       let currentProfileCustomerId = null;
+
+      const CUSTOMER_GROUPS_KEY = "orderpadCustomerGroups_v1";
+      let customerGroups = {
+        Monday: [],
+        Tuesday: [],
+        Wednesday: [],
+        Thursday: [],
+        Friday: []
+      };
+      let activeGroupDay = null;
+
+      function loadCustomerGroups() {
+        customerGroups = {
+          Monday: [],
+          Tuesday: [],
+          Wednesday: [],
+          Thursday: [],
+          Friday: []
+        };
+        try {
+          const raw = localStorage.getItem(CUSTOMER_GROUPS_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object") {
+              ["Monday","Tuesday","Wednesday","Thursday","Friday"].forEach(day => {
+                if (Array.isArray(parsed[day])) {
+                  customerGroups[day] = parsed[day].filter(id => typeof id === "string" && id);
+                }
+              });
+            }
+          }
+        } catch (e) {
+          console.warn("Could not load customer groups", e);
+        }
+      }
+
+      function saveCustomerGroups() {
+        try {
+          localStorage.setItem(CUSTOMER_GROUPS_KEY, JSON.stringify(customerGroups));
+        } catch (e) {
+          console.warn("Could not save customer groups", e);
+        }
+      }
+
+      function renderCustomerGroupsOverview() {
+        if (!customerListsDays) return;
+        customerListsDays.innerHTML = "";
+        const days = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+        const allCustomers = window.customers || [];
+
+        days.forEach(day => {
+          const ids = (customerGroups[day] || []).filter(Boolean);
+          const count = ids.length;
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "customer-list-day-card";
+          button.dataset.day = day;
+
+          const nameEl = document.createElement("div");
+          nameEl.className = "day-name";
+          nameEl.textContent = day;
+
+          const metaEl = document.createElement("div");
+          metaEl.className = "day-meta";
+          metaEl.textContent = count
+            ? `${count} customer${count === 1 ? "" : "s"}`
+            : "No customers yet";
+
+          button.appendChild(nameEl);
+          button.appendChild(metaEl);
+
+          button.addEventListener("click", () => {
+            openCustomerGroup(day);
+          });
+
+          customerListsDays.appendChild(button);
+        });
+
+        if (customerListGroupContainer) {
+          customerListGroupContainer.classList.add("hidden");
+        }
+      }
+
+      
+      function openCustomerListsPage() {
+        const desktopFlow = window.matchMedia && window.matchMedia("(min-width: 1024px)").matches;
+
+        if (!desktopFlow) {
+          startCard.classList.add("hidden");
+        }
+
+        startOptionsCard.classList.add("hidden");
+        orderMain.classList.add("hidden");
+        addItemPage.classList.add("hidden");
+        customerSelectPage.classList.add("hidden");
+        customerListsPage.classList.remove("hidden");
+        renderCustomerGroupsOverview();
+      }
+
+      function openCustomerGroup(day) {
+        activeGroupDay = day;
+        if (!customerGroupTitle || !customerGroupList) return;
+        customerGroupTitle.textContent = `${day} List`;
+        renderCustomerGroupMembers(day);
+        if (customerListGroupContainer) {
+          customerListGroupContainer.classList.remove("hidden");
+        }
+      }
+
+      function renderCustomerGroupMembers(day) {
+        if (!customerGroupList) return;
+        customerGroupList.innerHTML = "";
+        const ids = (customerGroups[day] || []).filter(Boolean);
+        if (!ids.length) {
+          const empty = document.createElement("div");
+          empty.className = "muted";
+          empty.textContent = `No customers in the ${day} list yet. Tap "Edit List" to add some.`;
+          customerGroupList.appendChild(empty);
+          return;
+        }
+        const all = window.customers || [];
+        ids.forEach(id => {
+          const c = all.find(cust => cust.id === id);
+          if (!c) return;
+          const row = document.createElement("div");
+          row.className = "customer-row";
+          row.dataset.customerId = c.id;
+
+          const main = document.createElement("div");
+          main.className = "customer-row-main";
+
+          const nameEl = document.createElement("div");
+          nameEl.className = "customer-row-name";
+          nameEl.textContent = c.name || c.id;
+          main.appendChild(nameEl);
+
+          const cityLabel =
+            (c.city || "") +
+            (c.state ? ((c.city ? ", " : "") + c.state) : "");
+
+          if (cityLabel) {
+            const cityEl = document.createElement("div");
+            cityEl.className = "customer-row-city";
+            cityEl.textContent = cityLabel;
+            main.appendChild(cityEl);
+          }
+
+          row.appendChild(main);
+
+          row.addEventListener("click", () => {
+            selectCustomerAndGoToOrder(c.id);
+          });
+
+          customerGroupList.appendChild(row);
+        });
+      }
+
+      function openCustomerGroupModal() {
+        if (!activeGroupDay || !customerGroupModalBackdrop) return;
+        customerGroupModalTitle.textContent = `Edit ${activeGroupDay} List`;
+        customerGroupSearchInput.value = "";
+        renderCustomerGroupSelectList();
+        customerGroupModalBackdrop.classList.remove("hidden");
+      }
+
+      function closeCustomerGroupModal() {
+        if (!customerGroupModalBackdrop) return;
+        customerGroupModalBackdrop.classList.add("hidden");
+      }
+
+      function renderCustomerGroupSelectList() {
+        if (!customerGroupSelectList) return;
+        const search = (customerGroupSearchInput.value || "").toLowerCase();
+        const all = window.customers || [];
+        const inGroup = new Set((customerGroups[activeGroupDay] || []).filter(Boolean));
+        customerGroupSelectList.innerHTML = "";
+
+        const filtered = all.filter((c) => {
+          const name = (c.name || "").toLowerCase();
+          const id = (c.id || "").toLowerCase();
+          const city = (c.city || "").toLowerCase();
+          const state = (c.state || "").toLowerCase();
+          return (
+            !search ||
+            name.includes(search) ||
+            id.includes(search) ||
+            city.includes(search) ||
+            state.includes(search)
+          );
+        });
+
+        if (!filtered.length) {
+          const empty = document.createElement("div");
+          empty.className = "muted";
+          empty.textContent = "No customers found.";
+          customerGroupSelectList.appendChild(empty);
+          return;
+        }
+
+        filtered.forEach(c => {
+          const row = document.createElement("div");
+          row.className = "customer-row";
+          row.dataset.customerId = c.id;
+
+          const main = document.createElement("div");
+          main.className = "customer-row-main";
+
+          const nameEl = document.createElement("div");
+          nameEl.className = "customer-row-name";
+          nameEl.textContent = c.name || c.id;
+          main.appendChild(nameEl);
+
+          const cityLabel =
+            (c.city || "") +
+            (c.state ? ((c.city ? ", " : "") + c.state) : "");
+          if (cityLabel) {
+            const cityEl = document.createElement("div");
+            cityEl.className = "customer-row-city";
+            cityEl.textContent = cityLabel;
+            main.appendChild(cityEl);
+          }
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.className = "customer-group-checkbox";
+          checkbox.dataset.customerId = c.id;
+          checkbox.checked = inGroup.has(c.id);
+          checkbox.style.width = "auto";
+
+          row.appendChild(main);
+          row.appendChild(checkbox);
+
+          row.addEventListener("click", (evt) => {
+            if (evt.target === checkbox) return;
+            checkbox.checked = !checkbox.checked;
+          });
+
+          customerGroupSelectList.appendChild(row);
+        });
+      }
 
       // ---- helpers ----
       function formatMoney(n) {
@@ -1326,6 +2755,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           loadUserProfiles();
           loadCustomerProfiles();
+          loadCustomerGroups();
           const storedUser = localStorage.getItem("orderpadUser") || localStorage.getItem("orderpadCurrentUser");
           if (storedUser) {
             currentUser = storedUser;
@@ -1560,13 +2990,22 @@ document.addEventListener("DOMContentLoaded", () => {
           orderCustomerDisplay.textContent = found && found.name ? found.name : "Customer selected";
         }
 
+        const desktopFlow = window.matchMedia && window.matchMedia("(min-width: 1024px)").matches;
+
+        if (desktopFlow) {
+          // Desktop: keep earlier steps visible and reveal next panels
+          customerSelectPage.classList.remove("hidden");
+          addItemPage.classList.remove("hidden");
+          orderMain.classList.remove("hidden");
+          // Avoid focusing inputs (no surprise scroll/focus)
+          return;
+        }
+
+        // Mobile: step flow
         customerSelectPage.classList.add("hidden");
         orderMain.classList.remove("hidden");
-        orderNoteInput.focus();
+        // Avoid auto-focus to prevent mobile keyboard pop
       }
-
-
-      
       const MAIN_CATEGORIES = [
         "Paper",
         "Janitorial",
@@ -1778,6 +3217,52 @@ function getSubcategory(prod) {
           currentMainCategory = null;
         }
 
+        
+        // Desktop: two-lane Items layout (category list on left, products on right)
+        if (isDesktopFlow()) {
+          cats.forEach(cat => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "cat-row";
+            btn.dataset.category = cat;
+
+            const left = document.createElement("span");
+            left.textContent = cat;
+
+            const right = document.createElement("span");
+            right.className = "cat-meta";
+            const count = countsByCat[cat] || 0;
+            right.textContent = count ? `${count} item${count === 1 ? "" : "s"}` : "";
+
+            btn.appendChild(left);
+            btn.appendChild(right);
+
+            btn.addEventListener("click", () => {
+              currentMainCategory = cat;
+              currentSubcategory = null;
+
+              categoryGrid.querySelectorAll(".cat-row").forEach(b => b.classList.remove("active"));
+              btn.classList.add("active");
+
+              buildSubcategories();
+              showProductsForCategory();
+            });
+
+            categoryGrid.appendChild(btn);
+          });
+
+          // Keep selection highlighted if already chosen
+          if (currentMainCategory) {
+            const active = categoryGrid.querySelector(`.cat-row[data-category="${currentMainCategory}"]`);
+            if (active) active.classList.add("active");
+          }
+
+          buildSubcategories();
+          showProductsForCategory();
+          return;
+        }
+
+        // Mobile/tablet: accordion list
         cats.forEach(cat => {
           const card = document.createElement("div");
           card.className = "accordion-card";
@@ -1797,15 +3282,13 @@ function getSubcategory(prod) {
           const metaEl = document.createElement("div");
           metaEl.className = "accordion-meta";
           const count = countsByCat[cat] || 0;
-          metaEl.textContent = count
-            ? `${count} item${count === 1 ? "" : "s"} · Tap to view`
-            : "Tap to view";
+          metaEl.textContent = "Tap to view";
 
           headerMain.appendChild(titleEl);
           headerMain.appendChild(metaEl);
 
-          const chev = document.createElement("span");
-          chev.className = "accordion-chevron";
+          const chev = document.createElement("div");
+          chev.className = "accordion-chev";
           chev.textContent = "▾";
 
           header.appendChild(headerMain);
@@ -1813,38 +3296,11 @@ function getSubcategory(prod) {
 
           const body = document.createElement("div");
           body.className = "accordion-body";
-          body.dataset.categoryBody = cat;
 
           header.addEventListener("click", () => {
-            // collapse if clicking the already open card
-            if (openCategoryCard === card) {
-              card.classList.remove("open");
-              openCategoryCard = null;
-              currentMainCategory = null;
-              currentSubcategory = null;
-              subcategoryGrid.innerHTML = "";
-              if (productList) productList.innerHTML = "";
-              return;
-            }
-
+            card.classList.toggle("open");
             currentMainCategory = cat;
             currentSubcategory = null;
-
-            document
-              .querySelectorAll("#categoryGrid .accordion-card")
-              .forEach(c => c.classList.remove("open"));
-
-            card.classList.add("open");
-            openCategoryCard = card;
-
-            // Move subcategory chips and product list into this card body
-            if (subcategoryGrid && !body.contains(subcategoryGrid)) {
-              body.appendChild(subcategoryGrid);
-            }
-            if (productList && !body.contains(productList)) {
-              body.appendChild(productList);
-            }
-
             buildSubcategories();
             showProductsForCategory();
           });
@@ -1988,14 +3444,45 @@ function showProductsForCategory() {
             qtyInput.min = "1";
             qtyInput.step = "1";
             qtyInput.value = "1";
-            autoSizeQtyInput(qtyInput);
+            qtyInput.style.display = "none";
 
-            qtyInput.addEventListener("input", () => {
-              if (qtyInput.value === "" || Number(qtyInput.value) < 1) {
-                qtyInput.value = "1";
-              }
-              autoSizeQtyInput(qtyInput);
-            });
+            // Qty stepper: – 1 +
+            const stepper = document.createElement("div");
+            stepper.className = "qty-stepper";
+
+            const minusBtn = document.createElement("button");
+            minusBtn.type = "button";
+            minusBtn.className = "qty-minus";
+            minusBtn.textContent = "–";
+            minusBtn.setAttribute("aria-label", "Decrease quantity");
+
+            const valueEl = document.createElement("span");
+            valueEl.className = "qty-value";
+            valueEl.textContent = "1";
+
+            const plusBtn = document.createElement("button");
+            plusBtn.type = "button";
+            plusBtn.className = "qty-plus";
+            plusBtn.textContent = "+";
+            plusBtn.setAttribute("aria-label", "Increase quantity");
+
+            const syncQty = (next) => {
+              const n = Math.max(1, Math.min(999, Number(next) || 1));
+              qtyInput.value = String(n);
+              valueEl.textContent = String(n);
+            };
+
+            minusBtn.addEventListener("click", () => syncQty(Number(qtyInput.value) - 1));
+            plusBtn.addEventListener("click", () => syncQty(Number(qtyInput.value) + 1));
+
+            stepper.appendChild(minusBtn);
+            stepper.appendChild(valueEl);
+            stepper.appendChild(plusBtn);
+
+            // Keep qtyInput in DOM so existing add-to-cart logic keeps working
+            controls.appendChild(qtyInput);
+            controls.appendChild(stepper);
+
 
             const addBtn = document.createElement("button");
             addBtn.textContent = "Add";
@@ -2005,7 +3492,6 @@ function showProductsForCategory() {
               addToCart(prod, qty);
             });
 
-            controls.appendChild(qtyInput);
             controls.appendChild(addBtn);
 
             row.appendChild(main);
@@ -2405,7 +3891,7 @@ function renderCart() {
             const dateLabel = order.date || "Unknown date";
             const itemsCount = Array.isArray(order.items) ? order.items.length : 0;
             const totalStr = typeof order.total === "number" ? formatMoney(order.total) : "$0.00";
-            line1.textContent = `${dateLabel} – ${itemsCount} items – ${totalStr}`;
+            line1.textContent = `${dateLabel} – Tap to view – ${totalStr}`;
 
             const line2 = document.createElement("div");
             line2.className = "muted";
@@ -2588,6 +4074,7 @@ function renderCart() {
       loadCartState();
       renderCart();
       renderCustomerList();
+      renderCustomerGroupsOverview();
 
       addItemBtn.disabled = true;
       generateSummaryBtn.disabled = true;
@@ -2722,20 +4209,116 @@ function renderCart() {
       });
 
       // start new order
+      
+      // start new order
       startOrderBtn.addEventListener("click", () => {
         if (!currentUser) {
           loginModalBackdrop.classList.remove("hidden");
           loginUsernameInput.focus();
           return;
         }
+
+        const desktopFlow = window.matchMedia && window.matchMedia("(min-width: 1024px)").matches;
+
+        // Desktop: keep the Start button visible (no "page change"), just reveal next step
+        if (desktopFlow) {
+          startOptionsCard.classList.remove("hidden");
+          // keep other panels hidden until needed
+          customerListsPage.classList.add("hidden");
+          customerSelectPage.classList.add("hidden");
+          addItemPage.classList.add("hidden");
+          orderMain.classList.add("hidden");
+          return;
+        }
+
+        // Mobile: keep existing "step" flow
         startCard.classList.add("hidden");
         orderMain.classList.add("hidden");
-        customerSelectPage.classList.remove("hidden");
-        customerSearchInput.value = "";
-        renderCustomerList();
-        // no auto-focus; avoid popping mobile keyboard
-
+        addItemPage.classList.add("hidden");
+        customerSelectPage.classList.add("hidden");
+        customerListsPage.classList.add("hidden");
+        startOptionsCard.classList.remove("hidden");
       });
+
+      if (startSelectCustomerBtn) {
+        startSelectCustomerBtn.addEventListener("click", () => {
+          const desktopFlow = window.matchMedia && window.matchMedia("(min-width: 1024px)").matches;
+
+          // Always show customer selection list
+          customerSelectPage.classList.remove("hidden");
+          customerSearchInput.value = "";
+          renderCustomerList();
+
+          if (desktopFlow) {
+            // Desktop: keep options visible; don't hide the start button
+            customerListsPage.classList.add("hidden");
+            return;
+          }
+
+          // Mobile: step flow
+          startOptionsCard.classList.add("hidden");
+          customerListsPage.classList.add("hidden");
+          orderMain.classList.add("hidden");
+          addItemPage.classList.add("hidden");
+        });
+      }
+
+      
+      if (startCustomerListsBtn) {
+        startCustomerListsBtn.addEventListener("click", () => {
+          // Show Customer Lists in the same "options" column
+          openCustomerListsPage();
+        });
+      }
+
+      if (backFromCustomerListsBtn) {
+        backFromCustomerListsBtn.addEventListener("click", () => {
+          customerListsPage.classList.add("hidden");
+          if (customerListGroupContainer) {
+            customerListGroupContainer.classList.add("hidden");
+          }
+          startOptionsCard.classList.remove("hidden");
+        });
+      }
+
+      if (editCustomerGroupBtn) {
+        editCustomerGroupBtn.addEventListener("click", () => {
+          openCustomerGroupModal();
+        });
+      }
+
+      if (customerGroupSearchInput) {
+        customerGroupSearchInput.addEventListener("input", () => {
+          renderCustomerGroupSelectList();
+        });
+      }
+
+      if (cancelCustomerGroupBtn) {
+        cancelCustomerGroupBtn.addEventListener("click", () => {
+          closeCustomerGroupModal();
+        });
+      }
+
+      if (saveCustomerGroupBtn) {
+        saveCustomerGroupBtn.addEventListener("click", () => {
+          if (!activeGroupDay) {
+            closeCustomerGroupModal();
+            return;
+          }
+          const checkboxes = customerGroupSelectList.querySelectorAll(".customer-group-checkbox");
+          const selectedIds = [];
+          checkboxes.forEach(cb => {
+            if (cb.checked && cb.dataset.customerId) {
+              selectedIds.push(cb.dataset.customerId);
+            }
+          });
+          customerGroups[activeGroupDay] = selectedIds;
+          saveCustomerGroups();
+          closeCustomerGroupModal();
+          renderCustomerGroupsOverview();
+          openCustomerGroup(activeGroupDay);
+        });
+      }
 
       // change customer
       if (changeCustomerBtn) {
@@ -2995,6 +4578,15 @@ function renderCart() {
         });
       });
     }
-  </script>
+  
+
+  // Keep counts removed even if the UI re-renders categories/products
+  document.addEventListener('DOMContentLoaded', () => {
+    stripItemCountsEverywhere();
+    const mo = new MutationObserver(() => stripItemCountsEverywhere());
+    mo.observe(document.body, {subtree:true, childList:true, characterData:true});
+  });
+
+</script>
 </body>
 </html>
